@@ -22,9 +22,3 @@ find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
 target_link_libraries(TcpServerProcessor Qt6::Core Qt6::Network)
 
-#target_link_libraries(BaseRsDirectionFinder PUBLIC ScpiDevice CommonModule)
-
-
-#target_include_directories(BaseRsDirectionFinder PRIVATE ${DeployFolderInclude} "${CMAKE_CURRENT_SOURCE_DIR}/../../CommonModule")
-
-
