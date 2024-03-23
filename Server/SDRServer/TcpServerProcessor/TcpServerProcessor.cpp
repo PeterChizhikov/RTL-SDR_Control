@@ -57,5 +57,4 @@ void TcpServerProcessor::processMessage()
     auto senderClient = std::dynamic_pointer_cast<QTcpSocket>(std::shared_ptr<QObject>(sender(),[](QObject* obj){}));
     QByteArray data = senderClient->readAll();
     qDebug() << "Your message: " <<  QString::fromUtf8(data);
-    SendToClient(data);
 }
