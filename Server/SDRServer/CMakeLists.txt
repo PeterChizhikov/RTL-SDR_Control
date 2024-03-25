@@ -20,10 +20,15 @@ add_executable(SDRServer
   MainProcessor.h
   MainProcessor.cpp
 )
-target_link_libraries(SDRServer Qt6::Core  TcpServerProcessor SDRController Qt6::Network)
+target_link_libraries(SDRServer Qt6::Core  TcpServerProcessor SDRController Qt6::Network libsdr)
 
-target_include_directories(SDRServer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/TcpServerProcessor ${CMAKE_CURRENT_SOURCE_DIR}/SDRController)
+target_include_directories(SDRServer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/TcpServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/SDRController
+    ${CMAKE_CURRENT_SOURCE_DIR}/libsdr/src)
 
 
 add_subdirectory(./TcpServerProcessor)
 add_subdirectory(./SDRController)
+if (NOT TARGET libsdr)
+    add_subdirectory(libsdr)
+endif()
