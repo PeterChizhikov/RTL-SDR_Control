@@ -26,7 +26,6 @@ void TcpServerProcessor::SendToClient(QByteArray data)
 
 void TcpServerProcessor::newConnection()
 {
-    //Возвращается объект клиента?
     auto newSocket = std::shared_ptr<QTcpSocket>(tcpServer->nextPendingConnection());
     qDebug() << "tcp client connected: " << newSocket->peerAddress().toString() << "on port: " << QString::number(newSocket->peerPort());
 
@@ -34,11 +33,6 @@ void TcpServerProcessor::newConnection()
     connect(newSocket.get(), &QTcpSocket::disconnected, this, &TcpServerProcessor::socketDisconnected, Qt::QueuedConnection);
 
     sockets.push_back(newSocket);
-
-    //message after Connect
-    QString clientConnectedStatus = "Client connected";
-    newSocket->write(QByteArray::fromStdString(clientConnectedStatus.toStdString()));
-    newSocket->flush();
 }
 
 void TcpServerProcessor::socketDisconnected()
