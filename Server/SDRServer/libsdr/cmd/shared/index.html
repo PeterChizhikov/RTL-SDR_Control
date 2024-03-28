@@ -1,0 +1,74 @@
+<html>
+ <head>
+  <title>sdr-aprs &mdash; An APRS receiver using libsdr.</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+    html, body, #map-canvas {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+
+  <script>
+var map = null;
+var spots = {};
+var source = null;
+
+function onAddSpot (callsign, lon, lat) {
+  // Check if connection exists
+  if (callsign in spots) {
+    // If connection exists, update SNR
+    connections[spots].marker.setPosition(new google.maps.LatLng(lat, lon));
+  } else {
+    // otherwise, add marker at location with label callsign
+    var marker = new google.maps.Marker({
+       position: new google.maps.LatLng(lat, lon), title: callsign, map: map});
+    spots[callsign] = { marker: marker };
+  }
+}
+
+function updateHandler(e) {
+  var msg = JSON.parse(e.data);
+  console.log("RX: " + msg)
+  onAddSpot(msg.call, msg.lon, msg.lat);
+}
+
+function initialize() {
+  // Create Map object
+  map = new google.maps.Map(
+    document.getElementById('map-canvas'),
+    {zoom:2, center: new google.maps.LatLng(0,0), streetViewControl:false});
+
+  // Request all spots
+  var xmlhttp = new XMLHttpRequest();
+  var url = "spots";
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState != 4 && xmlhttp.status != 200) { return; }
+    var spots = JSON.parse(xmlhttp.responseText);
+    for (spot in spots) { onAddSpot(spot); }
+  }
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+
+  // Now, connect to event source for updates
+  if (!!window.EventSource) {
+    source = new window.EventSource("update");
+    source.addEventListener('message', updateHandler);
+  } else {
+    alert("Your browser does not support the EventSource -> no live update.")
+  }
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+ </head>
+ 
+ <body>
+  <div id="map-canvas">
+    <p>Can not load Google Maps view. Check your internet conenction!</p>
+  </div>
+ </body>
+</html>
