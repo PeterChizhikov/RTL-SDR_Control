@@ -3,6 +3,7 @@
 #include <QObject>
 #include "TcpServerProcessor.h"
 #include "UdpServerProcessor.h"
+#include "libsdr/src/sdr.hh"
 
 class MainProcessor : public QObject
 {

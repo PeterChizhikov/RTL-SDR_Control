@@ -1,7 +1,7 @@
 /* #undef SDR_DEBUG */
 
 #define SDR_WITH_FFTW 1
-/* #undef SDR_WITH_PORTAUDIO */
+#define SDR_WITH_PORTAUDIO 1
 #define SDR_WITH_RTLSDR 1
 
 #define SDR_VERSION_MAJOR 0
