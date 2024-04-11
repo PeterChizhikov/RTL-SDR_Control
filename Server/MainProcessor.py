@@ -16,15 +16,10 @@ class MainProcessor:
         self.udpServer.start()
 
 
-
-        # while True:
-        #     print("MainProc is working...")
-        #     time.sleep(0.5)
-        
-        # self.deviceController = DeviceController(2.048e6,
-        #                                         60e6,60,
-        #                                         'auto',
-        #                                         256*1024)
-        
-        # samples = self.deviceController.readDeviceData()
+        self.deviceController = DeviceController(2.048e6,
+                                                60e6,60,
+                                                'auto',
+                                                256*1024)
+        samples = self.deviceController.readDeviceData()
+        print(samples)
         
