@@ -14,9 +14,11 @@ class UdpServer(Thread):
     def run(self):
         i = 0
         while True:
-            message="Num from udp: " + str(i)
+            message ="Num from udp: " + str(i)
+            # message = ""
             i = i +1
             time.sleep(0.6)
-            self.server_udp_socket.sendto(bytes(message, encoding='utf8'), self.ClientAddr)
+            if len(message) != 0:
+                self.server_udp_socket.sendto(bytes(message, encoding='utf8'), self.ClientAddr)
 
 

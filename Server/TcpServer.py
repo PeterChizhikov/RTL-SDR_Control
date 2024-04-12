@@ -1,34 +1,49 @@
 import socket
 from threading import Thread
+import json
+from PySide6.QtCore import QObject, Signal, Slot
 
 
-class TcpServer(Thread):
+class TcpServer(Thread, QObject):
     def __init__(self, serverAdress, serverPort):
-        super().__init__()
+        Thread.__init__(self)
+        QObject.__init__(self)
         self.serverAdressInfo = (serverAdress, serverPort)
-        #AF_INET используется для указания семейства адресов IPv4.
-        #SOCK_STREAM используется для указания сокета потока.
         self.daemon = True
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverSocket.bind(self.serverAdressInfo)
         self.serverSocket.listen(1)
 
+    startReadDataFromDeviceSignal = Signal()
+    stopReadDataFromDeviceSignal = Signal()
+        
+
+    def processComand(self,command):
+        if command["type"] == 'system':
+            self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
+             
+
     def run(self):
         while True:
             print("Tcp started on:", self.serverAdressInfo)    
-            # Бесконечно обрабатываем входящие подключения
             client_sock, client_addr = self.serverSocket.accept()
             print('Connected by', client_addr)
             while True:
-                # Пока клиент не отключился, читаем передаваемые
-                # им данные и отправляем их обратно
-                data = client_sock.recv(2048)
-                print(data)
-                client_sock.sendall(data)
+                try:
+                    data = client_sock.recv(2048)  
+                    self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
+                    response = "Great, best good"
+                    client_sock.sendall(bytes(response, encoding='utf8')) 
+                    
+                except:
+                    print("Something went wrong")
+                finally:
+                    print("The 'try except' is finished")
+
+
+                
                 if not data:
-                    # Клиент отключился
                     break
-                client_sock.sendall(data)
             client_sock.close()    
         
         
