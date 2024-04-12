@@ -1,1 +1,14 @@
-https://stackoverflow.com/questions/27893804/udp-client-server-socket-in-python
+TCP команды от клиента разделяются на 2 типа: "system" и "settings":
+
+TCP_PORT_SERVER = 5577
+
+system - отвечает за начало и остановку передачи данных на клиент с примемника
+{
+    "type": "system"
+    "action": "start"
+}
+or
+{
+    "type": "system"
+    "action": "stop"
+}
