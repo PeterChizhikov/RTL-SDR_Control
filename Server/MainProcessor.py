@@ -17,9 +17,9 @@ class MainProcessor:
 
 
         self.deviceController = DeviceController(2.048e6,
-                                                60e6,60,
+                                                70e6,60,
                                                 'auto',
-                                                256*1024)
+                                                512)
         samples = self.deviceController.readDeviceData()
         print(samples)
         
