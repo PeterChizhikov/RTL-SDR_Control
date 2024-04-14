@@ -3,7 +3,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 import time
 from threading import Thread, Lock
 import numpy as np
-
+from queue import Queue
 
 
 
@@ -22,9 +22,11 @@ class DeviceController(Thread, QObject):
         self.read_samples_num = read_samples
         self.read_device_data_status = False
         self.mutex = Lock()
+        self.queue = Queue()
 
 
-    saveToQueueSignal = Signal()
+    saveToQueueSignal = Signal(list)
+
 
     @Slot()
     def startReadDeviceDataSlot(self):
@@ -50,7 +52,6 @@ class DeviceController(Thread, QObject):
             print("self.samplesArr")
         # return self.samplesArr
 
-
     def processSamples(self, IQSamples):
         # cF = 60e6
         # N = 256*1024
@@ -63,16 +64,19 @@ class DeviceController(Thread, QObject):
         f = np.arange(Fs/-2.0, Fs/2.0, Fs/self.read_samples_num) # start, stop, step
         f += self.sdr.center_freq
         
-        #здесь вызов сигнала на передачу в udp
-        #realizovat bethopasnuu ochered потокобезопасная очередь с передачей в бдп сиервер где в дальнейшем нужно реализовать ждисон 1)очередь через сигналы слоты 2)
-        #
-        
 
+        # queue = Queue()
+
+        cordsToRecive = self.queue.put([f,PSD_shifted])
+
+        self.saveToQueueSignal.emit(cordsToRecive)
+        
 
 
 
     def __del__(self):
         if self.sdr:
             self.sdr.close()
+            self.queue.join()
 
  

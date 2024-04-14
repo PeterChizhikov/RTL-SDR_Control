@@ -19,8 +19,9 @@ class UdpServer(Thread, QObject):
 
 
     @Slot()
-    def saveToQueueSlot(self, frequencyArr, magnitudeArr):
+    def saveToQueueSlot(self, cordsToRecive):
         self.read_device_data_status = False
+        self.cordsQueue = cordsToRecive
 
 
     def run(self):
@@ -32,5 +33,10 @@ class UdpServer(Thread, QObject):
             time.sleep(0.6)
             if len(message) != 0:
                 self.server_udp_socket.sendto(bytes(message, encoding='utf8'), self.ClientAddr)
+            with self.mutex:
+                self.read_device_data_status = True
+                while not self.cordsQueue.empty():
+                    data = self.cordsQueue.get()
+                    ###тут обработчик даты
 
 
