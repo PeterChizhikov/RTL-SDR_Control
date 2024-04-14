@@ -13,8 +13,10 @@ class UdpServer(Thread, QObject):
         self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_udp_socket.bind(self.fullAddr)
         self.ClientAddr = (serverAddr, ClientPort)
-        self.dataQueue = Queue()
+        # self.dataQueue = Queue()
         self.mutex = Lock()
+        self.read_device_data_status = False
+        self.cordsQueue = Queue()
         print("Udp started on:", self.fullAddr) 
 
 

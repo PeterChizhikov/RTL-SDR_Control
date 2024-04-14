@@ -12,7 +12,8 @@ class DeviceController(Thread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
                  gain,read_samples):
-        
+        Thread.__init__(self)
+        QObject.__init__(self)
         self.sdr = RtlSdr()
         self.daemon = True
         self.sdr.sample_rate = sampleRate
@@ -25,7 +26,7 @@ class DeviceController(Thread, QObject):
         self.queue = Queue()
 
 
-    saveToQueueSignal = Signal(list)
+    saveToQueueSlot = Signal()
 
 
     @Slot()
@@ -69,7 +70,7 @@ class DeviceController(Thread, QObject):
 
         cordsToRecive = self.queue.put([f,PSD_shifted])
 
-        self.saveToQueueSignal.emit(cordsToRecive)
+        self.saveToQueueSlot.emit(cordsToRecive)
         
 
 
