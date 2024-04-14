@@ -1,16 +1,28 @@
 import time
 import socket
-from threading import Thread
+from threading import Thread, Lock
+from PySide6.QtCore import QObject, Signal, Slot
+from queue import Empty, Queue
 
 
-class UdpServer(Thread):
+class UdpServer(Thread, QObject):
     def __init__(self, serverAddr, PortAddr,ClientPort):
-        super().__init__()
+        Thread.__init__(self)
+        QObject.__init__(self)
         self.fullAddr = (serverAddr, PortAddr)
         self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_udp_socket.bind(self.fullAddr)
         self.ClientAddr = (serverAddr, ClientPort)
+        self.dataQueue = Queue()
+        self.mutex = Lock()
         print("Udp started on:", self.fullAddr) 
+
+
+    @Slot()
+    def saveToQueueSlot(self, frequencyArr, magnitudeArr):
+        self.read_device_data_status = False
+
+
     def run(self):
         i = 0
         while True:
