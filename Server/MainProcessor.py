@@ -1,11 +1,10 @@
 from TcpServer import TcpServer 
 from UdpServer import UdpServer
 from DeviceController import DeviceController 
-import time
-import sys
 from PySide6.QtWidgets import QApplication, QPushButton
 from PySide6.QtCore import SIGNAL, QObject, Qt
 
+from queue import Empty, Queue
 
 
 TCP_PORT = 5577
@@ -24,22 +23,9 @@ class MainProcessor:
 
         self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot,Qt.DirectConnection)
         self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
-
+        #сигнал слот на запись в очередь через queueConnection
         
         self.tcpServer.start()
         self.udpServer.start()
         self.deviceController.start()
-
-
-
-        # while True:
-        #     print("MainProc is working...")
-        #     time.sleep(0.5)
-        
-        # self.deviceController = DeviceController(2.048e6,
-        #                                         60e6,60,
-        #                                         'auto',
-        #                                         256*1024)
-        
-        # samples = self.deviceController.readDeviceData()
         

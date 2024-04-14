@@ -2,6 +2,10 @@ from rtlsdr import RtlSdr
 from PySide6.QtCore import QObject, Signal, Slot
 import time
 from threading import Thread, Lock
+import numpy as np
+
+
+
 
 class DeviceController(Thread, QObject):
     samplesArr = []
@@ -20,6 +24,8 @@ class DeviceController(Thread, QObject):
         self.mutex = Lock()
 
 
+    saveToQueueSignal = Signal()
+
     @Slot()
     def startReadDeviceDataSlot(self):
         with self.mutex:
@@ -28,7 +34,6 @@ class DeviceController(Thread, QObject):
         readDeviceDataThread = Thread(target=self.readDeviceData)
         readDeviceDataThread.daemon = True
         readDeviceDataThread.start()
-
 
 
     @Slot()
@@ -41,8 +46,26 @@ class DeviceController(Thread, QObject):
         while self.read_device_data_status:
             time.sleep(0.5)
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)
+            self.processSamples(self.samplesArr)
             print("self.samplesArr")
         # return self.samplesArr
+
+
+    def processSamples(self, IQSamples):
+        # cF = 60e6
+        # N = 256*1024
+        Fs = self.sdr.sample_rate / 1e6
+        PSD = np.abs(np.fft.fft(IQSamples))**2/(self.read_samples_num*Fs)
+        PSD_log = 10.0*np.log10(PSD)
+        #y:
+        PSD_shifted = np.fft.fftshift(PSD_log)
+        #x:
+        f = np.arange(Fs/-2.0, Fs/2.0, Fs/self.read_samples_num) # start, stop, step
+        f += self.sdr.center_freq
+        
+        #здесь вызов сигнала на передачу в udp
+
+
 
 
     def __del__(self):
