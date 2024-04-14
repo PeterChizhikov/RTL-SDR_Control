@@ -15,7 +15,6 @@ class MainProcessor:
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
         self.udpServer.start()
 
-
         self.deviceController = DeviceController(2.048e6,
                                                 70e6,60,
                                                 'auto',
