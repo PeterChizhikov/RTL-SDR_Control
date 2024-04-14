@@ -64,14 +64,17 @@ class DeviceController(Thread, QObject):
         #x:
         f = np.arange(Fs/-2.0, Fs/2.0, Fs/self.read_samples_num) # start, stop, step
         f += self.sdr.center_freq
-        
+        #min
+        minF = min(f)
+        #max
+        maxF = max(f)
 
         # queue = Queue()
 
-        cordsToRecive = self.queue.put([f,PSD_shifted])
+        cordsToRecive = self.queue.put([f,PSD_shifted,minF,maxF])
 
         self.saveToQueueSlot.emit(cordsToRecive)
-        
+        print("cords",cordsToRecive)
 
 
 

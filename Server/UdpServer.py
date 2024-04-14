@@ -3,6 +3,7 @@ import socket
 from threading import Thread, Lock
 from PySide6.QtCore import QObject, Signal, Slot
 from queue import Empty, Queue
+import json
 
 
 class UdpServer(Thread, QObject):
@@ -25,6 +26,9 @@ class UdpServer(Thread, QObject):
         self.read_device_data_status = False
         self.cordsQueue = cordsToRecive
 
+    def arrayToJson(array):
+        dictionary = {x:array[0],y:array[1],min:array[2],max:array[3]}
+        return json.dumps(dictionary)
 
     def run(self):
         i = 0
@@ -38,7 +42,7 @@ class UdpServer(Thread, QObject):
             with self.mutex:
                 self.read_device_data_status = True
                 while not self.cordsQueue.empty():
+                    print("cordrs on udp", cordsQueue)
                     data = self.cordsQueue.get()
-                    ###тут обработчик даты
-
+                    json = arrayToJson(data)
 
