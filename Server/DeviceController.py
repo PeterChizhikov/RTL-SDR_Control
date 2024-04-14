@@ -5,6 +5,7 @@ class DeviceController():
     def __init__(self, sampleRate, centerFreq, freq_correction,
                  gain,read_samples):
         
+        
         self.sdr = RtlSdr()
         self.sdr.sample_rate = sampleRate
         self.sdr.center_freq = centerFreq
