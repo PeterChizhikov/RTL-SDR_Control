@@ -7,6 +7,7 @@ import numpy as np
 
 
 
+
 class DeviceController(Thread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
@@ -63,6 +64,9 @@ class DeviceController(Thread, QObject):
         f += self.sdr.center_freq
         
         #здесь вызов сигнала на передачу в udp
+        #realizovat bethopasnuu ochered потокобезопасная очередь с передачей в бдп сиервер где в дальнейшем нужно реализовать ждисон 1)очередь через сигналы слоты 2)
+        #
+        
 
 
 
