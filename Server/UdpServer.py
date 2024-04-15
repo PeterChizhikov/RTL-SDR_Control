@@ -14,7 +14,6 @@ class UdpServer(Thread, QObject):
         self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_udp_socket.bind(self.fullAddr)
         self.ClientAddr = (serverAddr, ClientPort)
-        # self.dataQueue = Queue()
         self.mutex = Lock()
         self.read_device_data_status = False
         self.cordsQueue = Queue()
@@ -27,7 +26,7 @@ class UdpServer(Thread, QObject):
         self.cordsQueue = cordsToRecive
 
     def arrayToJson(array):
-        dictionary = {x:array[0],y:array[1],min:array[2],max:array[3]}
+        dictionary = {x:array[0],y:array[1],minf:array[2],maxf:array[3]}
         return json.dumps(dictionary)
 
     def run(self):
@@ -45,4 +44,4 @@ class UdpServer(Thread, QObject):
                     print("cordrs on udp", cordsQueue)
                     data = self.cordsQueue.get()
                     json = arrayToJson(data)
-
+                    #self.server_udp_socket.sendto(bytes(json, encoding='utf8'), self.ClientAddr)
