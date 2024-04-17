@@ -12,3 +12,16 @@ or
     "type": "system"
     "action": "stop"
 }
+
+settings - отвечает за установку нужных параметров на примемник 
+sample rate, center frequency, frequency correction(PPM), gain.
+Усиление нужно предложить пользователю ввести самому,
+либо выставить на авто
+{
+    "type": "settings"
+    "sample_rate": ""
+    "center_frequency": ""
+    "frequency_correction": ""
+    "gain": ""
+}
+
