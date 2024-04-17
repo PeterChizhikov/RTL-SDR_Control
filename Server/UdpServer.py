@@ -4,7 +4,7 @@ from threading import Thread, Lock
 from PySide6.QtCore import QObject, Signal, Slot
 from queue import Empty, Queue
 import json
-
+from DeviceController import SDRData
 
 class UdpServer(Thread, QObject):
     def __init__(self, serverAddr, PortAddr,ClientPort):
@@ -22,12 +22,20 @@ class UdpServer(Thread, QObject):
 
     @Slot()
     def saveToQueueSlot(self, cordsToRecive):
-        self.read_device_data_status = False
+        with self.mutex:
+            self.read_device_data_status = False
         self.cordsQueue = cordsToRecive
 
     def arrayToJson(array):
         dictionary = {x:array[0],y:array[1],minf:array[2],maxf:array[3]}
         return json.dumps(dictionary)
+
+        # class SDRData():
+        #     def __init__(self,x,y,minf,maxf):
+        #         self.cords = [x,y]
+        #         self.minf = minf 
+        #         self.maxf = maxf
+
 
     def run(self):
         i = 0

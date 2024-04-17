@@ -53,6 +53,12 @@ class DeviceController(Thread, QObject):
             print("self.samplesArr")
         # return self.samplesArr
 
+    class SDRData():
+        def __init__(self,x,y,minf,maxf):
+            self.cords = [x,y]
+            self.minf = minf 
+            self.maxf = maxf
+
     def processSamples(self, IQSamples):
         # cF = 60e6
         # N = 256*1024
@@ -71,7 +77,9 @@ class DeviceController(Thread, QObject):
 
         # queue = Queue()
 
-        cordsToRecive = self.queue.put([f,PSD_shifted,minF,maxF])
+        data = SDRData(f,PSD_shifted,minF,maxF)
+
+        cordsToRecive = self.queue.put(data)
 
         self.saveToQueueSlot.emit(cordsToRecive)
         print("cords",cordsToRecive)
