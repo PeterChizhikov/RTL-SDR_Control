@@ -26,9 +26,9 @@ class UdpServer(Thread, QObject):
             self.read_device_data_status = False
         self.cordsQueue = cordsToRecive
 
-    def arrayToJson(array):
-        dictionary = {x:array[0],y:array[1],minf:array[2],maxf:array[3]}
-        return json.dumps(dictionary)
+    def SDRDataToJson(SDRData):
+
+        return 'json'
 
         # class SDRData():
         #     def __init__(self,x,y,minf,maxf):
@@ -51,5 +51,5 @@ class UdpServer(Thread, QObject):
                 while not self.cordsQueue.empty():
                     print("cordrs on udp", cordsQueue)
                     data = self.cordsQueue.get()
-                    json = arrayToJson(data)
+                    json = SDRDataToJson(data)
                     #self.server_udp_socket.sendto(bytes(json, encoding='utf8'), self.ClientAddr)

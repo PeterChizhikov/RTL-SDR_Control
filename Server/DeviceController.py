@@ -58,6 +58,12 @@ class DeviceController(Thread, QObject):
             self.cords = [x,y]
             self.minf = minf 
             self.maxf = maxf
+        def getCords(self):
+            return self.cords
+        def getMax(self):
+            return self.maxf
+        def getMin(self):
+            return self.minf
 
     def processSamples(self, IQSamples):
         # cF = 60e6
