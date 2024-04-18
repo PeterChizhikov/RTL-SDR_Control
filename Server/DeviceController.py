@@ -53,13 +53,13 @@ class DeviceController(Thread, QObject):
             print("self.samplesArr")
         # return self.samplesArr
 
-    class SDRData():
+    class SDRData:
         def __init__(self,x,y,minf,maxf):
-            self.cords = [x,y]
+            self.coordinates = list(zip(x, y))
             self.minf = minf 
             self.maxf = maxf
-        def getCords(self):
-            return self.cords
+        def getCoordinates(self):
+            return self.coordinates
         def getMax(self):
             return self.maxf
         def getMin(self):
@@ -88,7 +88,6 @@ class DeviceController(Thread, QObject):
         cordsToRecive = self.queue.put(data)
 
         self.saveToQueueSlot.emit(cordsToRecive)
-        print("cords",cordsToRecive)
 
 
 
