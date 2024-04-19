@@ -23,10 +23,21 @@ class DeviceController(Thread, QObject):
         self.read_samples_num = read_samples
         self.read_device_data_status = False
         self.mutex = Lock()
-        self.queue = Queue()
+        self.queue = Queue(maxsize=1)
 
+    class SDRData:
+        def __init__(self,x,y,minf,maxf):
+            self.coordinates = list(zip(x, y))
+            self.minf = minf 
+            self.maxf = maxf
+        def getCoordinates(self):
+            return self.coordinates
+        def getMax(self):
+            return self.maxf
+        def getMin(self):
+            return self.minf
 
-    saveToQueueSlot = Signal()
+    saveToQueueSlot = Signal(SDRData)
 
 
     @Slot()
@@ -52,18 +63,6 @@ class DeviceController(Thread, QObject):
             self.processSamples(self.samplesArr)
             print("self.samplesArr")
         # return self.samplesArr
-
-    class SDRData:
-        def __init__(self,x,y,minf,maxf):
-            self.coordinates = list(zip(x, y))
-            self.minf = minf 
-            self.maxf = maxf
-        def getCoordinates(self):
-            return self.coordinates
-        def getMax(self):
-            return self.maxf
-        def getMin(self):
-            return self.minf
 
     def processSamples(self, IQSamples):
         # cF = 60e6

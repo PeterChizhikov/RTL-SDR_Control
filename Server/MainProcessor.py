@@ -16,9 +16,10 @@ SERVER_ADRESS = 'localhost'
 
 class MainProcessor:
     def __init__(self):
+        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 256*1024)
         self.tcpServer = TcpServer(SERVER_ADRESS,TCP_PORT)
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
-        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 256*1024)
+
 
 
         self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot,Qt.DirectConnection)
