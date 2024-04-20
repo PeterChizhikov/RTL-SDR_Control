@@ -17,7 +17,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Application</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #0c1116;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="horizontalLayoutWidget">
@@ -25,13 +28,16 @@
      <rect>
       <x>50</x>
       <y>140</y>
-      <width>251</width>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">color: white;</string>
+       </property>
        <property name="text">
         <string>Sample Rate</string>
        </property>
@@ -39,6 +45,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox">
+       <property name="styleSheet">
+        <string notr="true">background-color: white;</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -54,13 +63,16 @@
      <rect>
       <x>50</x>
       <y>170</y>
-      <width>251</width>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">color: white;</string>
+       </property>
        <property name="text">
         <string>Center Frequency</string>
        </property>
@@ -68,6 +80,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox_2">
+       <property name="styleSheet">
+        <string notr="true">background-color: white;</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -83,13 +98,16 @@
      <rect>
       <x>50</x>
       <y>200</y>
-      <width>267</width>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_3">
+       <property name="styleSheet">
+        <string notr="true">color: white;</string>
+       </property>
        <property name="text">
         <string>Frequency Correction</string>
        </property>
@@ -97,6 +115,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox_3">
+       <property name="styleSheet">
+        <string notr="true">background-color: white;</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -112,13 +133,16 @@
      <rect>
       <x>50</x>
       <y>230</y>
-      <width>251</width>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="styleSheet">
+        <string notr="true">color: white;</string>
+       </property>
        <property name="text">
         <string>Gain</string>
        </property>
@@ -126,6 +150,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox_4">
+       <property name="styleSheet">
+        <string notr="true">background-color: white;</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -136,6 +163,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
+       <property name="styleSheet">
+        <string notr="true">background-color:blue;
+border-radius: 5px;
+color: white;
+border: 1px solid white;</string>
+       </property>
        <property name="text">
         <string>Auto</string>
        </property>
@@ -146,11 +179,17 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>260</y>
-      <width>161</width>
+      <x>190</x>
+      <y>270</y>
+      <width>141</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:blue;
+border-radius: 5px;
+color: white;
+border: 1px solid white;</string>
     </property>
     <property name="text">
      <string>Start</string>
@@ -160,10 +199,16 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>260</y>
+      <y>270</y>
       <width>91</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:blue;
+border-radius: 5px;
+color: white;
+border: 1px solid white;</string>
     </property>
     <property name="text">
      <string>Set</string>
@@ -176,10 +221,13 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>300</y>
+      <y>320</y>
       <width>251</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: red;</string>
     </property>
     <property name="text">
      <string>TextLabel</string>
@@ -188,10 +236,10 @@
    <widget class="QCustomPlot" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>40</y>
-      <width>571</width>
-      <height>361</height>
+      <x>520</x>
+      <y>20</y>
+      <width>471</width>
+      <height>311</height>
      </rect>
     </property>
    </widget>
@@ -212,7 +260,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>lib/qcustomplot/qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

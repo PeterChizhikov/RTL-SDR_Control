@@ -1,5 +1,5 @@
 #include "handlers.h"
-#include "DTO.h"
+#include "dto/DTO.h"
 #include <QTcpSocket>
 #include <nlohmann/json.hpp>
 #include "worker.h"

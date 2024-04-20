@@ -2,7 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <iostream>
 #include <QTcpSocket>
-#include "handlers.h"
+#include "handlers/handlers.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -39,5 +39,7 @@ void MainWindow::on_pushButton_5_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     autoState = !autoState;
+
+    autoState ? ui->pushButton->setStyleSheet("background-color:green; border-radius: 5px; color: white; border: 1px solid white;") : ui->pushButton->setStyleSheet("background-color:blue; border-radius: 5px; color: white; border: 1px solid white;");
 }
 

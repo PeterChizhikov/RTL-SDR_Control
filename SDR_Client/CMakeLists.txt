@@ -21,13 +21,13 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        DTO.h
-        handlers.h
-        qcustomplot.h
-        handlers.cpp
-        qcustomplot.cpp
-        worker.h
-        worker.cpp
+        dto/DTO.h
+        handlers/handlers.h
+        lib/qcustomplot/qcustomplot.h
+        handlers/handlers.cpp
+        lib/qcustomplot/qcustomplot.cpp
+        worker/worker.h
+        worker/worker.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
