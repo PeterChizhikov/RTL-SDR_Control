@@ -33,7 +33,7 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::on_pushButton_5_clicked()
 {
-
+    onSetClick(this, ui, autoState);
 }
 
 void MainWindow::on_pushButton_clicked()
