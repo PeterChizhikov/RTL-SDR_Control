@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
         qcustomplot.h
         handlers.cpp
         qcustomplot.cpp
+        worker.h
+        worker.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

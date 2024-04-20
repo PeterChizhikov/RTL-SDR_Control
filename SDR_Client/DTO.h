@@ -10,7 +10,7 @@ struct Options {
     int sampleRate;
     double centerFrequency;
     double frequencyCorrection;
-    double gain;
+    std::string gain;
 };
 
 json marshall(const Options& opts){

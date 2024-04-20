@@ -36,3 +36,8 @@ void MainWindow::on_pushButton_5_clicked()
 
 }
 
+void MainWindow::on_pushButton_clicked()
+{
+    autoState = !autoState;
+}
+
