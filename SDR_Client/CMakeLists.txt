@@ -13,12 +13,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS PrintSupport REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        DTO.h
+        handlers.h
+        qcustomplot.h
+        handlers.cpp
+        qcustomplot.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -45,6 +52,8 @@ else()
 endif()
 
 target_link_libraries(SDR_Client PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(SDR_Client PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(SDR_Client PRIVATE Qt${QT_VERSION_MAJOR}::PrintSupport)
 
 set_target_properties(SDR_Client PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
@@ -61,3 +70,5 @@ endif()
 add_subdirectory(lib/json-develop)
 
 target_link_libraries(SDR_Client PRIVATE nlohmann_json)
+
+
