@@ -119,8 +119,8 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 
 void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     const int sample_rate = ui->spinBox->value();
-    const double center_frequency = ui->spinBox_2->value();
-    const double frequency_correction = ui->spinBox_3->value();
+    const std::string center_frequency = std::to_string(ui->spinBox_2->value());
+    const std::string frequency_correction = std::to_string(ui->spinBox_3->value());
     const std::string gain =  autoState ? "auto" : std::to_string(ui->spinBox_4->value());
     const Options opts = {sample_rate, center_frequency, frequency_correction, gain};
     QString response;

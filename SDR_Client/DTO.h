@@ -8,8 +8,8 @@ using json = nlohmann::json;
 
 struct Options {
     int sampleRate;
-    double centerFrequency;
-    double frequencyCorrection;
+    std::string centerFrequency;
+    std::string frequencyCorrection;
     std::string gain;
 };
 
