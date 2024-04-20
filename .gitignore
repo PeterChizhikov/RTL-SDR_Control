@@ -1,3 +1,4 @@
 .vscode/
 Server/Build
 Server/__pycache__
+SDR_Client/CMakeLists.txt.user
