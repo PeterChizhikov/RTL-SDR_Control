@@ -23,7 +23,6 @@ class DeviceController(Thread, QObject):
         self.read_samples_num = read_samples
         self.read_device_data_status = False
         self.mutex = Lock()
-        self.queue = Queue(maxsize=1)
 
     class SDRData:
         def __init__(self,x,y,minf,maxf):
@@ -65,28 +64,28 @@ class DeviceController(Thread, QObject):
         # return self.samplesArr
 
     def processSamples(self, IQSamples):
-        # cF = 60e6
-        # N = 256*1024
+            # cF = 60e6
+            # N = 256*1024
         Fs = self.sdr.sample_rate / 1e6
         PSD = np.abs(np.fft.fft(IQSamples))**2/(self.read_samples_num*Fs)
         PSD_log = 10.0*np.log10(PSD)
-        #y:
+            #y:
         PSD_shifted = np.fft.fftshift(PSD_log)
-        #x:
+            #x:
         f = np.arange(Fs/-2.0, Fs/2.0, Fs/self.read_samples_num) # start, stop, step
         f += self.sdr.center_freq
-        #min
+            #min
         minF = min(f)
-        #max
+            #max
         maxF = max(f)
+        
+        # while True:
+            # queue = Queue()
+        data = self.SDRData(f,PSD_shifted,minF,maxF)
 
-        # queue = Queue()
+            # cordsToRecive = self.queue.put(data)
 
-        data = SDRData(f,PSD_shifted,minF,maxF)
-
-        cordsToRecive = self.queue.put(data)
-
-        self.saveToQueueSlot.emit(cordsToRecive)
+        self.saveToQueueSlot.emit(data)
 
 
 

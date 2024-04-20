@@ -16,6 +16,8 @@ SERVER_ADRESS = 'localhost'
 
 class MainProcessor:
     def __init__(self):
+
+
         self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 256*1024)
         self.tcpServer = TcpServer(SERVER_ADRESS,TCP_PORT)
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
@@ -32,15 +34,3 @@ class MainProcessor:
         self.deviceController.start()
 
 
-
-        # while True:
-        #     print("MainProc is working...")
-        #     time.sleep(0.5)
-        
-        # self.deviceController = DeviceController(2.048e6,
-        #                                         60e6,60,
-        #                                         'auto',
-        #                                         256*1024)
-        
-        # samples = self.deviceController.readDeviceData()
-        
