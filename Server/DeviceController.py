@@ -6,7 +6,6 @@ import numpy as np
 
 
 
-
 class DeviceController(Thread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
