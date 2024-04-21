@@ -50,8 +50,9 @@ class UdpServer(Thread, QObject):
                 self.UDPQueue.put(self.DataFromController)
                 # if not self.UDPQueue.empty():   
                 data = self.UDPQueue.get()
-                json = self.SDRDataToJson(data)
-                self.server_udp_socket.sendto(bytes(str(json), encoding='utf8'), self.ClientAddr)
+                json = data.pack()
+                # self.server_udp_socket.sendto(bytes(json, encoding='utf8'), self.ClientAddr)
+                self.server_udp_socket.sendto(json, self.ClientAddr)
             #сохдать очередь и доставаать
             else:
                 self.server_udp_socket.sendto(bytes(str("err"), encoding='utf8'), self.ClientAddr)
@@ -65,4 +66,4 @@ class UdpServer(Thread, QObject):
 
 
 
-    #python struct iterpack 
+    #python srtuct iterpack   
