@@ -13,10 +13,10 @@ bool handleResponse(MainWindow* w, Ui::MainWindow *ui, QString& response) {
 
     if(resp["answer"]!=200){
         ui->label_7->setText("Error occured...");
-        return true;
+        return false;
     }
 
-    return false;
+    return true;
 
 }
 
