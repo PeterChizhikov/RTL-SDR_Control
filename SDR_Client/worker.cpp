@@ -2,6 +2,7 @@
 #include <QUdpSocket>
 #include <ctime>
 #include <nlohmann/json.hpp>
+#include "dto/DTO.h"
 
 using json = nlohmann::json;
 
@@ -41,22 +42,17 @@ void Worker::run() {
 
             data = QString::fromUtf8(datagram);
 
-            json response(data.toStdString());
+            json response = json::parse(data.toStdString());
 
             //QVector<QVector<double>> mock = generateMock();
 
-            QVector<QVector<double>> points = response["data"];
+            GraphData gData = unmarshallGraphData(response);
 
-            QVector<double> xAxis, yAxis;
 
-            for(auto& v : points){
-                xAxis.append(v[0]);
-                yAxis.append(v[1]);
-            }
 
-            ui->customPlot->yAxis->setRange(0, response["max_y"]);
-            ui->customPlot->xAxis->setRange(response["min_x"], response["max_x"]);
-            ui->customPlot->graph(0)->setData(xAxis, yAxis);
+            ui->customPlot->yAxis->setRange(0, gData.maxValueY);
+            ui->customPlot->xAxis->setRange(gData.minFrequencyX, gData.maxFrequencyX);
+            ui->customPlot->graph(0)->setData(gData.xValues, gData.yValues);
             ui->customPlot->replot();
         }
 
