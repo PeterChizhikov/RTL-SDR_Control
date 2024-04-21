@@ -22,9 +22,10 @@ class TcpServer(Thread, QObject):
         if command["type"] == 'system':
             self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
-                
+                self.getParametersFromJson()
 
-    def getParametersFromJson(self, jsonData)
+    def getParametersFromJson(self, jsonData):
+        print("getParametersFromJson called")
 
     def run(self):
         while True:
@@ -37,14 +38,10 @@ class TcpServer(Thread, QObject):
                     self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
                     response = "Great, best good"
                     client_sock.sendall(bytes(response, encoding='utf8')) 
-                    
                 except:
                     print("Something went wrong")
                 finally:
                     print("The 'try except' is finished")
-
-
-                
                 if not data:
                     break
             client_sock.close()    

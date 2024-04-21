@@ -23,7 +23,6 @@ class MainProcessor:
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
 
 
-
         self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot,Qt.DirectConnection)
         self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
         self.deviceController.saveToQueueSlot.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)
