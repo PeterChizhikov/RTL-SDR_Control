@@ -25,8 +25,8 @@ class MainProcessor:
 
         self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot,Qt.DirectConnection)
         self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
-        self.deviceController.saveToQueueSlot.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)
-        #сигнал слот на запись в очередь через queueConnection
+        self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)
+
         
         self.tcpServer.start()
         self.udpServer.start()

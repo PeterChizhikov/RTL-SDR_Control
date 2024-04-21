@@ -39,7 +39,11 @@ class TcpServer(Thread, QObject):
                     response = "Great, best good"
                     client_sock.sendall(bytes(response, encoding='utf8')) 
                 except:
-                    print("Something went wrong")
+                    x = {
+                    "answer": 200,
+                    }
+                    y = json.dumps(x)
+                    client_sock.sendall(bytes(y, encoding='utf8')) 
                 finally:
                     print("The 'try except' is finished")
                 if not data:

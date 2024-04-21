@@ -7,7 +7,6 @@ from queue import Queue
 
 
 
-
 class DeviceController(Thread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
@@ -36,7 +35,7 @@ class DeviceController(Thread, QObject):
         def getMin(self):
             return self.minf
 
-    saveToQueueSlot = Signal(SDRData)
+    saveToQueueSignal = Signal(SDRData)
 
 
     @Slot()
@@ -85,13 +84,10 @@ class DeviceController(Thread, QObject):
 
             # cordsToRecive = self.queue.put(data)
 
-        self.saveToQueueSlot.emit(data)
-
-
+        self.saveToQueueSignal.emit(data)
 
     def __del__(self):
         if self.sdr:
             self.sdr.close()
-            self.queue.join()
 
  

@@ -28,8 +28,7 @@ class UdpServer(Thread, QObject):
     @Slot(DeviceController.SDRData)
     def saveToQueueSlot(self, cordsToRecive):
         with self.mutex:
-            self.read_device_data_status = True
-            self.DataFromController = cordsToRecive
+            self.UDPQueue.put(self.DataFromController)
 
     def SDRDataToJson(self,SDRData):
         jsonData = json.dumps(SDRData.__dict__, indent=1)
@@ -46,12 +45,12 @@ class UdpServer(Thread, QObject):
         i = 0
         while True:
             # self.server_udp_socket.sendto(bytes(str(123), encoding='utf8'), self.ClientAddr)
-            if self.read_device_data_status:
-                self.UDPQueue.put(self.DataFromController)
+            if not self.UDPQueue.empty():
                 # if not self.UDPQueue.empty():   
                 data = self.UDPQueue.get()
                 json = self.SDRDataToJson(data)
-                self.server_udp_socket.sendto(bytes(str(json), encoding='utf8'), self.ClientAddr)
+                #TODO JSON
+                self.server_udp_socket.sendto(bytes(str("ok"), encoding='utf8'), self.ClientAddr)
             #сохдать очередь и доставаать
             else:
                 self.server_udp_socket.sendto(bytes(str("err"), encoding='utf8'), self.ClientAddr)

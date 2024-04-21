@@ -1,3 +1,4 @@
 Server/Build
 Server/__pycache__
-SDR_Client/CMakeLists.txt.user
+SDR_Client/*.txt.user
+/build-SDR_Client-Desktop-Debug
