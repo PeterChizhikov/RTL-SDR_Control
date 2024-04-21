@@ -43,3 +43,9 @@ void MainWindow::on_pushButton_clicked()
     autoState ? ui->pushButton->setStyleSheet("background-color:green; border-radius: 5px; color: white; border: 1px solid white;") : ui->pushButton->setStyleSheet("background-color:blue; border-radius: 5px; color: white; border: 1px solid white;");
 }
 
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    onExitClick();
+}

@@ -2,11 +2,10 @@
 #include "dto/DTO.h"
 #include <QTcpSocket>
 #include <nlohmann/json.hpp>
-#include "worker.h"
 
 using json = nlohmann::json;
 
-Worker worker;
+Worker* worker;
 
 bool handleResponse(MainWindow* w, Ui::MainWindow *ui, QString& response) {
 
@@ -29,7 +28,8 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
     requestJSON["type"]="system";
     requestJSON["action"]="start";
 
-    worker.SetContext(w, ui);
+    worker = new Worker(w, ui);
+    worker->start();
 
     QTcpSocket* socket = new QTcpSocket(w);
 
@@ -71,8 +71,7 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
 }
 
 void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
-    worker.stop();
-
+    worker->stop();
     QString response;
 
     json requestJSON;
@@ -97,10 +96,13 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
             response = QString::fromUtf8(temp);
             if(handleResponse(w, ui, response)) {
 
+                worker->wait();
+
                 ui->label_7->setVisible(false);
 
                 activityState = !activityState;
                 ui->pushButton_3->setText("Start");
+
             }
 
 
@@ -161,4 +163,11 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     }
 
     socket->close();
+}
+
+void onExitClick(){
+
+    worker->stop();
+    worker->wait();
+    QApplication::exit();
 }

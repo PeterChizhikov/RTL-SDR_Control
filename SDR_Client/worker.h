@@ -14,9 +14,11 @@ class Worker : public QThread
 
 public:
     void run() override;
-    void SetContext(QMainWindow* _w, Ui::MainWindow * _ui){
-        w=_w;
-        ui=_ui;
+    Worker(QMainWindow* _w, Ui::MainWindow* _ui) : w(_w), ui(_ui){}
+    Worker(const Worker& other) : w(other.w), ui(other.ui) {}
+    Worker(Worker&& other) : w(other.w), ui(other.ui) {
+        other.w = nullptr;
+        other.ui = nullptr;
     }
     void stop(){
         this->requestInterruption();
@@ -24,3 +26,5 @@ public:
 };
 
 #endif // WORKER_H
+
+
