@@ -36,11 +36,15 @@ class TcpServer(Thread, QObject):
                 try:
                     data = client_sock.recv(2048)  
                     self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
-                    response = "Great, best good"
-                    client_sock.sendall(bytes(response, encoding='utf8')) 
-                except:
                     x = {
                     "answer": 200,
+                    }
+                    y = json.dumps(x)
+                    client_sock.sendall(bytes(y, encoding='utf8')) 
+                except:
+                    print("exept")
+                    x = {
+                    "answer": 423,
                     }
                     y = json.dumps(x)
                     client_sock.sendall(bytes(y, encoding='utf8')) 
