@@ -9,7 +9,7 @@ Worker* worker;
 
 bool handleResponse(MainWindow* w, Ui::MainWindow *ui, QString& response) {
 
-    json resp(response.toStdString());
+    json resp = json::parse(response.toStdString());
 
     if(resp["answer"]!=200){
         ui->label_7->setText("Error occured...");

@@ -1,0 +1,6 @@
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/CMakeFiles/SDR_Client.dir
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/CMakeFiles/edit_cache.dir
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/CMakeFiles/rebuild_cache.dir
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/CMakeFiles/SDR_Client_autogen.dir
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/lib/json-develop/CMakeFiles/edit_cache.dir
+/home/gleb/Рабочий стол/RTL-SDR_Control/build-SDR_Client-Desktop-Debug/lib/json-develop/CMakeFiles/rebuild_cache.dir
