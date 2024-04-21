@@ -27,6 +27,7 @@ class TcpServer(Thread, QObject):
     def getParametersFromJson(self, jsonData):
         print("getParametersFromJson called")
 
+
     def run(self):
         while True:
             print("Tcp started on:", self.serverAdressInfo)    
@@ -43,11 +44,6 @@ class TcpServer(Thread, QObject):
                     client_sock.sendall(bytes(y, encoding='utf8')) 
                 except:
                     print("exept")
-                    x = {
-                    "answer": 423,
-                    }
-                    y = json.dumps(x)
-                    client_sock.sendall(bytes(y, encoding='utf8')) 
                 finally:
                     print("The 'try except' is finished")
                 if not data:
