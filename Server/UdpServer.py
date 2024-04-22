@@ -64,4 +64,4 @@ class UdpServer(Thread, QObject):
 
 
 
-    #python struct iterpack 
+    #python srtuct iterpack   
