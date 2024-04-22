@@ -1,4 +1,4 @@
 Server/Build
-Server/__pycache__
+*.pyc
 SDR_Client/*.txt.user
 /build-SDR_Client-Desktop-Debug

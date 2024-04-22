@@ -1,7 +1,7 @@
 import socket
 from threading import Thread
 import json
-from PySide6.QtCore import QObject, Signal, Slot
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
 class TcpServer(Thread, QObject):
@@ -14,8 +14,8 @@ class TcpServer(Thread, QObject):
         self.serverSocket.bind(self.serverAdressInfo)
         self.serverSocket.listen(1)
 
-    startReadDataFromDeviceSignal = Signal()
-    stopReadDataFromDeviceSignal = Signal()
+    startReadDataFromDeviceSignal = pyqtSignal()
+    stopReadDataFromDeviceSignal = pyqtSignal()
         
 
     def processComand(self,command):

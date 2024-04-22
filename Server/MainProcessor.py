@@ -1,8 +1,8 @@
 from TcpServer import TcpServer 
 from UdpServer import UdpServer
 from DeviceController import DeviceController 
-from PySide6.QtWidgets import QApplication, QPushButton
-from PySide6.QtCore import SIGNAL, QObject, Qt
+
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, Qt
 
 from queue import Empty, Queue
 
@@ -23,7 +23,7 @@ class MainProcessor:
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
 
 
-        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot,Qt.DirectConnection)
+        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.DirectConnection)
         self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
         self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)
 
