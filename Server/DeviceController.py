@@ -21,7 +21,7 @@ class DeviceController(Thread, QObject):
         self.read_device_data_status = False
         self.mutex = Lock()
 
-    saveToQueueSignal = pyqtSignal(bytes)
+    saveToQueueSignal = pyqtSignal(SDRData.SDRData)
 
 
     def startReadDeviceDataSlot(self):
@@ -58,9 +58,9 @@ class DeviceController(Thread, QObject):
             #max
         maxF = max(f)
 
-        data = SDRData(f,PSD_shifted,minF,maxF)
+        data = SDRData.SDRData(f,PSD_shifted,minF,maxF)
 
-        self.saveToQueueSignal.emit(bytes(data))
+        self.saveToQueueSignal.emit(data)
 
     def __del__(self):
         if self.sdr:
