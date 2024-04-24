@@ -23,28 +23,29 @@ json marshall(const Options& opts){
 }
 
 struct GraphData{
-    double minFrequency;
-    double maxFrequency;
-    QVector<QVector<double>> values;
+    double minFrequencyX;
+    double maxFrequencyX;
+    double maxValueY;
+    QVector<double> xValues;
+    QVector<double> yValues;
 };
 
 GraphData unmarshallGraphData(json& response){
-    const double maxFrequency = response["max_frequency"];
-    const double minFrequency = response["min_frequency"];
+    const double maxFrequencyX = response["max_frequency"];
+    const double minFrequencyX = response["min_frequency"];
+    const double maxValueY = response["max_value"];
     json dataArray = response["data"];
-    QVector<QVector<double>> values;
+    QVector<double> xValues, yValues;
+
 
     if(dataArray.is_array()) {
         for(const auto& row : dataArray) {
-            QVector<double> tmpRow;
-            for(const auto& el : row){
-                tmpRow.push_back(el);
-            }
-            values.push_back(tmpRow);
+            xValues.push_back(row[0]);
+            yValues.push_back(row[1]);
         }
     }
 
-    return {minFrequency, maxFrequency, values};
+    return {minFrequencyX, maxFrequencyX, maxValueY, xValues, yValues};
 }
 
 #endif // DTO_H
