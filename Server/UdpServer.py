@@ -24,12 +24,11 @@ class UdpServer(Thread, QObject):
 
 
     def saveToQueueSlot(self, cordsToRecive):
-        print("max: ", cordsToRecive.getMax())
         with self.mutex:
             self.UDPQueue.put(cordsToRecive)
 
-    def SDRDataToJson(self,SDRData):
-        jsonData = json.dumps(SDRData.__dict__, indent=1)
+    def SDRDataToJson(self,SDRDataCord):
+        jsonData = json.dumps(SDRDataCord.__dict__, indent=1)
         return jsonData
 
 
@@ -37,13 +36,23 @@ class UdpServer(Thread, QObject):
         i = 0
         while True:
             if not self.UDPQueue.empty():
-                # if not self.UDPQueue.empty():   
+                #объект с точками и т д...
                 data = self.UDPQueue.get()
-                json = self.SDRDataToJson(data)
-                #TODO JSON
-                print("not self.UDPQueue.empty()")
-                self.server_udp_socket.sendto(bytes(str("data"), encoding='utf8'), self.ClientAddr)
-                # self.server_udp_socket.sendto(bytes(str("ok"), encoding='utf8'), self.ClientAddr)
-            #сохдать очередь и доставаать
-            # else:
-            #     self.server_udp_socket.sendto(bytes(str("err"), encoding='utf8'), self.ClientAddr)
+                #data [[],[],[],[],[]]
+                pointsArr = []
+                for pointIndex in range(len(data.x)):
+                    xPoint = data.x[pointIndex]
+                    yPoint = data.y[pointIndex]
+                    pointsArr.append([xPoint,yPoint])
+
+                print("value of max point:", data.getMax())
+                print("first element: ", pointsArr[0])
+                jsonObj = {
+                    "max_frequency" : data.getMax(),
+                    "min_frequency" : data.getMin(),
+                    "data": pointsArr
+                }
+                
+                json_dump_data = json.dumps(jsonObj)
+
+                self.server_udp_socket.sendto(bytearray(json_dump_data, encoding='utf8'), self.ClientAddr)

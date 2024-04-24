@@ -18,7 +18,7 @@ class MainProcessor:
     def __init__(self):
 
 
-        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 256*1024)
+        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 1024)
         self.tcpServer = TcpServer(SERVER_ADRESS,TCP_PORT)
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
 

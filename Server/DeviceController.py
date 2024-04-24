@@ -39,7 +39,6 @@ class DeviceController(Thread, QObject):
         while self.read_device_data_status:
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)
             self.processSamples(self.samplesArr)
-            print("self.samplesArr")
         # return self.samplesArr
 
     def processSamples(self, IQSamples):

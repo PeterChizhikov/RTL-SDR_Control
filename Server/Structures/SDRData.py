@@ -5,6 +5,8 @@ import array
 class SDRData:
     def __init__(self,x,y,minf,maxf):
         self.coordinates = list(zip(x, y))
+        self.x = x
+        self.y = y
         self.minf = minf 
         self.maxf = maxf  
     def getCoordinates(self):
