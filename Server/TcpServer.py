@@ -19,7 +19,7 @@ class TcpServer(Thread, QObject):
         
 
     def processComand(self,command):
-        print(command["type"])
+        print(command)
         if command["type"] == 'system':
             self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
