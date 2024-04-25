@@ -13,9 +13,7 @@ class UdpServer(Thread, QObject):
         self.fullAddr = (serverAddr, PortAddr)
         self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_udp_socket.bind(self.fullAddr)
-
         # self.server_udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024*1024)  # Увеличить до 1MB
-
         self.ClientAddr = (serverAddr, ClientPort)
         self.mutex = Lock()
         print("Udp started on:", self.fullAddr) 
