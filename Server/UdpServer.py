@@ -33,7 +33,6 @@ class UdpServer(Thread, QObject):
 
 
     def run(self):
-        i = 0
         while True:
             if not self.UDPQueue.empty():
                 #объект с точками и т д...
@@ -44,15 +43,14 @@ class UdpServer(Thread, QObject):
                     xPoint = data.x[pointIndex]
                     yPoint = data.y[pointIndex]
                     pointsArr.append([xPoint,yPoint])
-
                 print("value of max point:", data.getMax())
                 print("first element: ", pointsArr[0])
                 jsonObj = {
                     "max_frequency" : data.getMax(),
                     "min_frequency" : data.getMin(),
+                    "min_magnitude" : data.getMinY(),
+                    "max_magnitude": data.getMaxY(),
                     "data": pointsArr
                 }
-                
                 json_dump_data = json.dumps(jsonObj)
-
                 self.server_udp_socket.sendto(bytearray(json_dump_data, encoding='utf8'), self.ClientAddr)

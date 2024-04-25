@@ -44,4 +44,10 @@ sample rate, center frequency, frequency correction(PPM), gain.
 }
 UDP_PORT_SERVER = 6644
 UDP_PORT_CLIENT = 6643
-
+jsonObj = {
+    "max_frequency" : data.getMax(),
+    "min_frequency" : data.getMin(),
+    "min_magnitude" : data.getMinY(),
+    "max_magnitude": data.getMaxY(),
+    "data": [[],[],[],] тип: double || (int64)
+}

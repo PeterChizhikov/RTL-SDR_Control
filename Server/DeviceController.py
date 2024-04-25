@@ -57,7 +57,10 @@ class DeviceController(Thread, QObject):
             #max
         maxF = max(f)
 
-        data = SDRData.SDRData(f,PSD_shifted,minF,maxF)
+        minY = min(PSD_shifted)
+        maxY = max(PSD_shifted)
+
+        data = SDRData.SDRData(f,PSD_shifted,minF,maxF, minY, maxY)
 
         self.saveToQueueSignal.emit(data)
 
