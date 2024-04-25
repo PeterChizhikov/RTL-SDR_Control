@@ -1,7 +1,6 @@
 #include "handlers.h"
-#include "dto/DTO.h"
+#include "../dto/DTO.h"
 #include <QTcpSocket>
-#include <nlohmann/json.hpp>
 #include <future>
 #include <chrono>
 #include <thread>
@@ -31,8 +30,6 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
     requestJSON["type"]="system";
     requestJSON["action"]="start";
 
-    std::future<void> handleSuccess;
-
     worker = new Worker(w, ui);
     worker->start();
 
@@ -55,15 +52,17 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
 
             if(handleResponse(w, ui, response))
             {
-                handleSuccess = std::async(std::launch::async, [ui]() {
-                        ui->label_7->setStyleSheet("color:green;");
-                        ui->label_7->setText("Success");
-                        std::this_thread::sleep_for(std::chrono::seconds(1));
-                        ui->label_7->setStyleSheet("color:red;");
-                        ui->label_7->setVisible(false);
-                    });
+                std::future<void> handleSuccess = std::async([ui] {
+                    ui->label_7->setStyleSheet("color:green;");
+                    ui->label_7->setText("Success");
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    ui->label_7->setStyleSheet("color:red;");
+                    ui->label_7->setVisible(false);
+                });
                 activityState = !activityState;
                 ui->pushButton_3->setText("Stop");
+
+                handleSuccess.get();
 
             }
 
@@ -77,8 +76,8 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
         ui->label_7->setText("Error while connecting to server...");
     }
 
-    handleSuccess.wait();
     socket->close();
+    delete socket;
 }
 
 void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
@@ -88,8 +87,6 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
     json requestJSON;
     requestJSON["type"]="system";
     requestJSON["action"]="stop";
-
-    std::future<void> handleSuccess;
 
     QTcpSocket* socket = new QTcpSocket(w);
 
@@ -111,7 +108,7 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 
                 worker->wait();
 
-                handleSuccess = std::async(std::launch::async, [ui]() {
+                std::future<void> handleSuccess = std::async(std::launch::async, [ui]() {
                         ui->label_7->setStyleSheet("color:green;");
                         ui->label_7->setText("Success");
                         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -122,6 +119,7 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
                 activityState = !activityState;
                 ui->pushButton_3->setText("Start");
 
+                handleSuccess.get();
             }
 
 
@@ -135,7 +133,6 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
         ui->label_7->setText("Error while connecting to server...");
     }
 
-    handleSuccess.wait();
     socket->close();
 }
 
@@ -149,8 +146,6 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
 
     json request = marshall(opts);
     request["type"] = "settings";
-
-    std::future<void> handleSuccess;
 
     QTcpSocket* socket = new QTcpSocket(w);
 
@@ -170,7 +165,7 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
             response = QString::fromUtf8(temp);
             if(handleResponse(w, ui, response)) {
 
-                handleSuccess = std::async(std::launch::async, [ui]() {
+                std::future<void> handleSuccess = std::async(std::launch::async, [ui]() {
                         ui->label_7->setStyleSheet("color:green;");
                         ui->label_7->setText("Success");
                         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -178,9 +173,8 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
                         ui->label_7->setVisible(false);
                     });
 
+                handleSuccess.get();
             }
-
-
         }
         else {
             ui->label_7->setText("Error reading response...");
@@ -191,7 +185,6 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
         ui->label_7->setText("Error while connecting to server...");
     }
 
-    handleSuccess.wait();
     socket->close();
 }
 

@@ -23,6 +23,10 @@ public:
     void stop(){
         this->requestInterruption();
     }
+
+public slots:
+
+    void updatePlot(double minF, double maxF, double minM, double maxM, const QVector<double>& xValues, const QVector<double>& yValues );
 };
 
 #endif // WORKER_H

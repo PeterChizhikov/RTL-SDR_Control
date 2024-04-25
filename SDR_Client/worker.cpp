@@ -1,10 +1,50 @@
 #include "worker.h"
 #include <QUdpSocket>
 #include <ctime>
-#include <nlohmann/json.hpp>
-#include "dto/DTO.h"
 
 using json = nlohmann::json;
+
+struct GraphData{
+    double minFrequencyX;
+    double maxFrequencyX;
+    double maxValueY;
+    double minValueY;
+    QVector<double> xValues;
+    QVector<double> yValues;
+};
+
+GraphData unmarshallGraphData(json& response){
+    const double maxFrequencyX = response["max_frequency"];
+    const double minFrequencyX = response["min_frequency"];
+    const double maxValueY = response["max_magnitude"];
+    const double minValueY = response["min_magnitude"];
+    json dataArray = response["data"];
+    QVector<double> xValues, yValues;
+
+
+    if(dataArray.is_array()) {
+        for(const auto& row : dataArray) {
+            xValues.push_back(row[0]);
+            yValues.push_back(row[1]);
+        }
+    }
+
+    return {minFrequencyX, maxFrequencyX, maxValueY, minValueY, xValues, yValues};
+}
+
+void Worker::updatePlot(double minF, double maxF, double minM, double maxM, const QVector<double>& xValues, const QVector<double>& yValues ) {
+    ui->customPlot->yAxis->blockSignals(true);
+    ui->customPlot->xAxis->blockSignals(true);
+
+    ui->customPlot->yAxis->setRange(minM, maxM);
+    ui->customPlot->xAxis->setRange(minF, maxF);
+    ui->customPlot->graph(0)->setData(xValues, yValues);
+    ui->customPlot->replot();
+
+    ui->customPlot->blockSignals(false);
+    ui->customPlot->yAxis->blockSignals(false);
+    ui->customPlot->xAxis->blockSignals(false);
+}
 
 QVector<QVector<double>>  generateMock(){
 
@@ -48,17 +88,25 @@ void Worker::run() {
 
             GraphData gData = unmarshallGraphData(response);
 
-
-
-            ui->customPlot->yAxis->setRange(0, gData.maxValueY);
-            ui->customPlot->xAxis->setRange(gData.minFrequencyX, gData.maxFrequencyX);
-            ui->customPlot->graph(0)->setData(gData.xValues, gData.yValues);
-            ui->customPlot->replot();
+            updatePlot(gData.minFrequencyX, gData.maxFrequencyX, gData.minValueY, gData.maxValueY, gData.xValues, gData.yValues);
         }
+
+
+//        QVector<QVector<double>> mock = generateMock();
+//        QVector<double> xValues, yValues;
+
+//        for(const auto& row : mock) {
+//            xValues.push_back(row[0]);
+//            yValues.push_back(row[1]);
+//        }
+
+//        updatePlot(0, 5, 0, 100, xValues, yValues);
+        QThread::msleep(100);
 
     }
 
     udpSocket->close();
+    delete udpSocket;
 
 }
 
