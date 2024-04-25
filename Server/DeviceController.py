@@ -11,15 +11,19 @@ class DeviceController(Thread, QObject):
                  gain,read_samples):
         Thread.__init__(self)
         QObject.__init__(self)
-        self.sdr = RtlSdr()
-        self.daemon = True
-        self.sdr.sample_rate = sampleRate
-        self.sdr.center_freq = centerFreq
-        self.sdr.freq_correction = freq_correction 
-        self.sdr.gain = gain
+        try:
+            self.sdr = RtlSdr()
+        except IOError as e:
+            print(e)
+        else: 
+            self.sdr.sample_rate = sampleRate
+            self.sdr.center_freq = centerFreq
+            self.sdr.freq_correction = freq_correction 
+            self.sdr.gain = gain
         self.read_samples_num = read_samples
         self.read_device_data_status = False
         self.mutex = Lock()
+        self.daemon = True
 
     saveToQueueSignal = pyqtSignal(SDRData.SDRData)
 
