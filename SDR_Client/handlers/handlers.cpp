@@ -45,31 +45,31 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
         socket->write(message.toUtf8());
         socket->waitForBytesWritten();
 
-        if(socket->waitForReadyRead()){
+       if(socket->waitForReadyRead()){
 
-            QByteArray temp = socket->readAll();
-            response = QString::fromUtf8(temp);
+           QByteArray temp = socket->readAll();
+           response = QString::fromUtf8(temp);
 
-            if(handleResponse(w, ui, response))
-            {
-                std::future<void> handleSuccess = std::async([ui] {
-                    ui->label_7->setStyleSheet("color:green;");
-                    ui->label_7->setText("Success");
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                    ui->label_7->setStyleSheet("color:red;");
-                    ui->label_7->setVisible(false);
-                });
-                activityState = !activityState;
-                ui->pushButton_3->setText("Stop");
+           if(handleResponse(w, ui, response))
+           {
+               std::future<void> handleSuccess = std::async([ui] {
+                   ui->label_7->setStyleSheet("color:green;");
+                   ui->label_7->setText("Success");
+                   std::this_thread::sleep_for(std::chrono::seconds(1));
+                   ui->label_7->setStyleSheet("color:red;");
+                   ui->label_7->setVisible(false);
+               });
+               activityState = !activityState;
+               ui->pushButton_3->setText("Stop");
 
-                handleSuccess.get();
+               handleSuccess.get();
 
-            }
+           }
 
-        }
-        else {
-            ui->label_7->setText("Error reading response...");
-        }
+       }
+       else {
+           ui->label_7->setText("Error reading response...");
+       }
 
     }
     else {
