@@ -1,18 +1,16 @@
 import socket
 from threading import Thread
 import json
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal,QThread
 import requests
 
-class TcpServer(Thread, QObject):
+class TcpServer(QThread, QObject):
     def __init__(self, serverAdress, serverPort):
-        Thread.__init__(self)
+        QThread.__init__(self)
         QObject.__init__(self)
-        self.serverAdressInfo = (serverAdress, serverPort)
-        self.daemon = True
-        self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serverSocket.bind(self.serverAdressInfo)
-        self.serverSocket.listen(1)
+        self.servAdr = serverAdress
+        self.port = serverPort
+
 
     startReadDataFromDeviceSignal = pyqtSignal()
     stopReadDataFromDeviceSignal = pyqtSignal()
@@ -29,20 +27,26 @@ class TcpServer(Thread, QObject):
         print('')
 
     def run(self):
+        self.serverAdressInfo = (self.servAdr, self.port)
+        self.daemon = True
+        self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serverSocket.bind(self.serverAdressInfo)
+        self.serverSocket.listen(1)
         while True:
             print("Tcp started on:", self.serverAdressInfo)    
             client_sock, client_addr = self.serverSocket.accept()
             print('Connected by', client_addr)
             while True:
                 data = client_sock.recv(2048)  
-                #qt: 
-                self.processComand(json.loads(data.decode('utf8')))
-                # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
-                x = {
-                    "answer": 200,
-                }
-                y = json.dumps(x)
-                client_sock.sendall(bytes(y, encoding='utf8')) 
+                #qt:
+                if len(data) != 0: 
+                    self.processComand(json.loads(data.decode('utf8')))
+                    # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
+                    x = {
+                        "answer": 200,
+                    }
+                    y = json.dumps(x)
+                    client_sock.sendall(bytes(y, encoding='utf8')) 
                 if not data:
                     break
             client_sock.close()    
