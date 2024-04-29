@@ -1,15 +1,15 @@
 from rtlsdr import RtlSdr
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal,QThread
 from threading import Thread, Lock
 import numpy as np
 from Structures import SDRData
+import time
 
-
-class DeviceController(Thread, QObject):
+class DeviceController(QThread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
                  gain,read_samples):
-        Thread.__init__(self)
+        QThread.__init__(self)
         QObject.__init__(self)
         try:
             self.sdr = RtlSdr()
@@ -24,17 +24,27 @@ class DeviceController(Thread, QObject):
         self.read_device_data_status = False
         self.mutex = Lock()
         self.daemon = True
+        self.unMutex = Lock()
+        self.workerMut = Lock()
 
     saveToQueueSignal = pyqtSignal(SDRData.SDRData)
 
 
     def startReadDeviceDataSlot(self):
+        print("startReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = True
-            self.readDeviceData()
+        self.readDeviceData()
 
+
+
+    def run(self):
+        while not self.read_device_data_status:
+            time.sleep(0.5)
+            
 
     def stopReadDeviceDataSlot(self):
+        print("stopReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = False
 

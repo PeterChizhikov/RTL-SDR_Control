@@ -1,22 +1,18 @@
 import time
 import socket
 from threading import Thread, Lock
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot,QThread
 from queue import Empty, Queue
 import json
 from Structures import SDRData
 
-class UdpServer(Thread, QObject):
+class UdpServer(QThread, QObject):
     def __init__(self, serverAddr, PortAddr,ClientPort):
-        Thread.__init__(self)
+        QThread.__init__(self)
         QObject.__init__(self)
         self.fullAddr = (serverAddr, PortAddr)
-        self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.server_udp_socket.bind(self.fullAddr)
-        # self.server_udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024*1024)  # Увеличить до 1MB
         self.ClientAddr = (serverAddr, ClientPort)
-        self.mutex = Lock()
-        print("Udp started on:", self.fullAddr) 
+        
 
         self.UDPQueue = Queue(maxsize=1e6)
 
@@ -31,6 +27,12 @@ class UdpServer(Thread, QObject):
 
 
     def run(self):
+        self.server_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server_udp_socket.bind(self.fullAddr)
+        # self.server_udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024*1024)  # Увеличить до 1MB
+        
+        self.mutex = Lock()
+        print("Udp started on:", self.fullAddr) 
         while True:
             if not self.UDPQueue.empty():
                 #объект с точками и т д...
@@ -41,8 +43,8 @@ class UdpServer(Thread, QObject):
                     xPoint = data.x[pointIndex]
                     yPoint = data.y[pointIndex]
                     pointsArr.append([xPoint,yPoint])
-                print("value of max point:", data.getMax())
-                print("first element: ", pointsArr[0])
+                # print("value of max point:", data.getMax())
+                # print("first element: ", pointsArr[0])
                 jsonObj = {
                     "max_frequency" : data.getMax(),
                     "min_frequency" : data.getMin(),
@@ -52,3 +54,4 @@ class UdpServer(Thread, QObject):
                 }
                 json_dump_data = json.dumps(jsonObj)
                 self.server_udp_socket.sendto(bytearray(json_dump_data, encoding='utf8'), self.ClientAddr)
+                
