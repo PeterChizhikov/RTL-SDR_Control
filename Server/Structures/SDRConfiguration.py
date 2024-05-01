@@ -7,7 +7,7 @@ class SDRConfiguration:
         all_keys_exist = all(key in data for key in keys_to_check)
         if all_keys_exist:
             return SDRConfiguration(
-                sample_rate=data.get('sample_rate',2.048e6,),
+                sample_rate=data.get('sample_rate',2.048e6),
                 center_freq=data.get('center_freq',None),
                 freq_correction=data.get('freq_correction',60),
                 gain=data.get('gain', 'auto'),

@@ -3,6 +3,7 @@ from threading import Thread
 import json
 from PyQt5.QtCore import QObject, pyqtSignal
 import requests
+from Structures import SDRConfiguration
 
 class TcpServer(Thread, QObject):
     def __init__(self, serverAdress, serverPort):
@@ -36,8 +37,11 @@ class TcpServer(Thread, QObject):
             while True:
                 data = client_sock.recv(2048)  
                 #qt: 
-                self.processComand(json.loads(data.decode('utf8')))
-                # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
+                # self.processComand(json.loads(data.decode('utf8')))
+                self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
+
+                SDRConfiguration.SDRConfiguration.from_json(data.decode('utf8'))
+                
                 x = {
                     "answer": 200,
                 }
