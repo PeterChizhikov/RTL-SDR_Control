@@ -13,14 +13,14 @@ class TcpServer(QThread, QObject):
         self.port = serverPort
 
 
-    startReadDataFromDeviceSignal = pyqtSignal()
+    startReadDataFromDeviceSignal = pyqtSignal(json_data)
     stopReadDataFromDeviceSignal = pyqtSignal()
         
 
     def processComand(self,command):
         print(command)
         if command["type"] == 'system':
-            self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
+            self.startReadDataFromDeviceSignal.emit(command) if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
             self.getParametersFromJson(command)
 
@@ -41,13 +41,14 @@ class TcpServer(QThread, QObject):
                 data = client_sock.recv(2048)  
                 #qt:
                 if len(data) != 0: 
-                    self.processComand(json.loads(data.decode('utf8')))
-                    # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
-                    x = {
-                        "answer": 200,
-                    }
-                    y = json.dumps(x)
-                    client_sock.sendall(bytes(y, encoding='utf8')) 
+                    # self.processComand(json.loads(data.decode('utf8')))
+                    # # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
+                    # x = {
+                    #     "answer": 200,
+                    # }
+                    # y = json.dumps(x)
+                    message = SDRConfiguration.SDRConfiguration.from_json(data)
+                    client_sock.sendall(bytes(message, encoding='utf8')) 
                 if not data:
                     break
             client_sock.close()    
