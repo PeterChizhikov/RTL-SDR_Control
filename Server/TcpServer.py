@@ -13,16 +13,16 @@ class TcpServer(QThread, QObject):
         self.port = serverPort
 
 
-    startReadDataFromDeviceSignal = pyqtSignal(json_data)
+    startReadDataFromDeviceSignal = pyqtSignal(str)
     stopReadDataFromDeviceSignal = pyqtSignal()
         
 
-    def processComand(self,command):
+    def processComand(self,command,json):
         print(command)
         if command["type"] == 'system':
-            self.startReadDataFromDeviceSignal.emit(command) if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
+            self.startReadDataFromDeviceSignal.emit(json) if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
-            self.getParametersFromJson(command)
+            self.getParametersFromJson()
 
     def getParametersFromJson(self, jsonData):
         print('')
@@ -42,12 +42,17 @@ class TcpServer(QThread, QObject):
                 #qt:
                 if len(data) != 0: 
                     # self.processComand(json.loads(data.decode('utf8')))
-                    # # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
-                    # x = {
-                    #     "answer": 200,
-                    # }
-                    # y = json.dumps(x)
-                    message = SDRConfiguration.SDRConfiguration.from_json(data)
+                    self.processComand(json.loads(data.decode('utf8').replace("'", '"'))
+                        ,data.decode('utf8').replace("'", '"'))
+                    x = {
+                        "type": "settings",
+                        "sample_rate": "2.048e6",
+                        "center_frequency": "60e6",
+                        "frequency_correction": "60" ,
+                        "gain": "auto",
+                    }
+                    y = json.dumps(x)
+                    message = SDRConfiguration.SDRConfiguration.from_json(y)
                     client_sock.sendall(bytes(message, encoding='utf8')) 
                 if not data:
                     break

@@ -14,7 +14,7 @@ class SDRConfiguration:
                 read_samples = data.get('read_samples',1024)
             )
         else:
-            raise ValueError("Ошибка настроек") 
+            raise ValueError("Ошибка настроек")  
 
     def settings_handler(json_data):
         keys_to_check = ['sample_rate', 'center_frequency', 'frequency_correction']
@@ -25,17 +25,24 @@ class SDRConfiguration:
         else:
             return json.dumps({"answer": 409, "error": "Ошибка настроек"})
 
+
+    def start_receiver(json):
+        return True
+
+    def stop_receiver(json):
+        return True
+
     def from_json(json_message):    
         try:
             message = json.loads(json_message)
             if message['type'] == 'system':
                 if message['action'] == 'start':
-                    if start_receiver():
+                    if SDRConfiguration.start_receiver(json_message):
                         return json.dumps({"answer": 200})
                     else:
                         return json.dumps({"answer": 423})
                 elif message['action'] == 'stop':
-                    if stop_receiver():
+                    if SDRConfiguration.stop_receiver(json_message):
                         return json.dumps({"answer": 200})
                     else:
                         return json.dumps({"answer": 423})

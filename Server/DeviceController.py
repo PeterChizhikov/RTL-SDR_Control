@@ -10,7 +10,7 @@ class DeviceController(QThread, QObject):
     samplesArr = []
     def __init__(self, sampleRate, centerFreq, freq_correction,
                  gain,read_samples):
-        QThread.__init__(self)
+        QThread.__init__(self)      
         QObject.__init__(self)
         try:
             self.sdr = RtlSdr()
@@ -34,8 +34,9 @@ class DeviceController(QThread, QObject):
         print("startReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = True
+
         
-        config = SDRConfiguration.SDRConfiguration.load_settings(json_data)
+        config = SDRConfiguration.SDRConfiguration.load_settings(json_data=json_data)
         self.sdr.sample_rate = config.sampleRate
         self.sdr.center_freq = config.centerFreq
         self.sdr.freq_correction = config.freq_correction 
