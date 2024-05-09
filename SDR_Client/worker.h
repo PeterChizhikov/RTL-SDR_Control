@@ -5,16 +5,16 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-
 class Worker : public QThread
 {
 
-    QMainWindow* w;
+    MainWindow* w;
     Ui::MainWindow *ui;
+    QList<QVector<double> > value_lofar;
 
 public:
     void run() override;
-    Worker(QMainWindow* _w, Ui::MainWindow* _ui) : w(_w), ui(_ui){}
+    Worker(MainWindow* _w, Ui::MainWindow* _ui) : w(_w), ui(_ui){}
     Worker(const Worker& other) : w(other.w), ui(other.ui) {}
     Worker(Worker&& other) : w(other.w), ui(other.ui) {
         other.w = nullptr;

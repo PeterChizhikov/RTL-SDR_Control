@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <nlohmann/json.hpp>
+#include <./lib/qcustomplot/qcustomplot.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,6 +17,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void WaterfallInit();
+
+    QCustomPlot * fp3;
+    QCPColorMap * m_pColorMap;
 
 private slots:
     void on_pushButton_3_clicked();

@@ -38,20 +38,42 @@ void Worker::updatePlot(double minF, double maxF, double minM, double maxM, cons
 
     ui->customPlot->yAxis->setRange(minM, maxM);
     ui->customPlot->xAxis->setRange(minF, maxF);
+    ui->customPlot_2->xAxis->setRange(minF, maxF);
     ui->customPlot->graph(0)->setData(xValues, yValues);
     ui->customPlot->replot();
 
     ui->customPlot->blockSignals(false);
     ui->customPlot->yAxis->blockSignals(false);
     ui->customPlot->xAxis->blockSignals(false);
+
+    if(value_lofar.size()>99)
+    {
+        value_lofar.removeLast();
+    }
+
+    value_lofar.prepend(yValues);
+
+    for (int i=0;i<value_lofar.size();i++)
+    {
+        for(int j=0;j<xValues.size();j++)
+        {
+            w->m_pColorMap->data()->setCell(j,i,value_lofar[i][j]);
+        }
+    }
+
+    w->m_pColorMap->rescaleDataRange(true);
+    w->m_pColorMap->data()->setSize(xValues.size()+1,100);
+    w->fp3->rescaleAxes();
+    ui->customPlot_2->replot();
+
 }
 
-QVector<QVector<double>>  generateMock(){
+QVector<QVector<double>> generateMock(){
 
     srand(time(0));
     QVector<QVector<double>> values;
 
-    for(double i = 0.0; i < 5.0 ; i+=0.01){
+    for(double i = 0.0; i < 8.0 ; i+=1){
         QVector<double> tmp;
         tmp.append(i);
         tmp.append(rand()%100);
@@ -67,8 +89,8 @@ void Worker::run() {
     udpSocket->bind(QHostAddress::Any, 6643);
 
     ui->customPlot->addGraph();
-    ui->customPlot->xAxis->setLabel("f");
-    ui->customPlot->yAxis->setLabel("S(f)");
+    ui->customPlot->xAxis->setLabel("frequency");
+    ui->customPlot->yAxis->setLabel("magnitude");
 
     while(!isInterruptionRequested()){
 
