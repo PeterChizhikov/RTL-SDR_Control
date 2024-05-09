@@ -19,11 +19,6 @@ find_package(Qt5Gui             REQUIRED)
 find_package(Qt5Core            REQUIRED)
 find_package(Qt5SerialPort      REQUIRED)
 
-set(QWT_INCLUDE_DIRS /usr/local/qwt-6.3.0/include)
-set(QWT_LIBRARIES /usr/local/qwt-6.3.0/lib/libqwt.so)
-
-include_directories(${QWT_INCLUDE_DIRS})
-
 include_directories(${QT_INCLUDES})
 include_directories(.)
 
@@ -82,12 +77,11 @@ endif()
 
 add_subdirectory(lib/json-develop)
 
-target_link_libraries(SDR_Client PRIVATE nlohmann_json ${QWT_LIBRARIES})
+target_link_libraries(SDR_Client PRIVATE nlohmann_json)
 
 target_include_directories(SDR_Client PRIVATE
                           ${CMAKE_CURRENT_BINARY_DIR}
                           ${CMAKE_CURRENT_SOURCE_DIR}
-                          ${CMAKE_SOURCE_DIR}
-                          ${QWT_INCLUDE_DIRS})
+                          ${CMAKE_SOURCE_DIR})
 
 
