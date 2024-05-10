@@ -236,10 +236,10 @@ border: 1px solid white;</string>
    <widget class="QCustomPlot" name="customPlot" native="true">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>20</y>
-      <width>471</width>
-      <height>311</height>
+      <x>350</x>
+      <y>0</y>
+      <width>651</width>
+      <height>321</height>
      </rect>
     </property>
    </widget>
@@ -265,10 +265,10 @@ border: 1px solid white;</string>
    <widget class="QCustomPlot" name="customPlot_2" native="true">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>350</y>
-      <width>471</width>
-      <height>261</height>
+      <x>350</x>
+      <y>340</y>
+      <width>651</width>
+      <height>321</height>
      </rect>
     </property>
    </widget>

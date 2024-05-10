@@ -39,6 +39,7 @@ void Worker::updatePlot(double minF, double maxF, double minM, double maxM, cons
     ui->customPlot->yAxis->setRange(minM, maxM);
     ui->customPlot->xAxis->setRange(minF, maxF);
     ui->customPlot_2->xAxis->setRange(minF, maxF);
+    w->m_pColorMap->data()->setRange(QCPRange(minM,maxM),QCPRange(0,100));
     ui->customPlot->graph(0)->setData(xValues, yValues);
     ui->customPlot->replot();
 
@@ -73,10 +74,13 @@ QVector<QVector<double>> generateMock(){
     srand(time(0));
     QVector<QVector<double>> values;
 
-    for(double i = 0.0; i < 8.0 ; i+=1){
+    for(double i = 0.0; i < 5.0 ; i+=0.01){
         QVector<double> tmp;
         tmp.append(i);
-        tmp.append(rand()%100);
+        if(i>2.0&&i<3.0)
+        tmp.append(rand()%10+50);
+        else
+            tmp.append(rand()%20);
         values.append(tmp);
     }
 
