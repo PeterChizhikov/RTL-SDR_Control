@@ -13,19 +13,22 @@ class TcpServer(QThread, QObject):
         self.port = serverPort
 
 
-    startReadDataFromDeviceSignal = pyqtSignal(str)
+    startReadDataFromDeviceSignal = pyqtSignal()
     stopReadDataFromDeviceSignal = pyqtSignal()
         
 
-    def processComand(self,command,json):
+    def processComand(self,command):
         print(command)
         if command["type"] == 'system':
-            self.startReadDataFromDeviceSignal.emit(json) if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
+            self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
-            self.getParametersFromJson()
+            self.getParametersFromJson(command)
 
     def getParametersFromJson(self, jsonData):
         print('')
+        #кондишн вериэбл
+        message = SDRConfiguration.SDRConfiguration.from_json(jsonData)
+        #обработка json
 
     def run(self):
         self.serverAdressInfo = (self.servAdr, self.port)
@@ -41,19 +44,8 @@ class TcpServer(QThread, QObject):
                 data = client_sock.recv(2048)  
                 #qt:
                 if len(data) != 0: 
-                    # self.processComand(json.loads(data.decode('utf8')))
-                    self.processComand(json.loads(data.decode('utf8').replace("'", '"'))
-                        ,data.decode('utf8').replace("'", '"'))
-                    x = {
-                        "type": "settings",
-                        "sample_rate": "2.048e6",
-                        "center_frequency": "60e6",
-                        "frequency_correction": "60" ,
-                        "gain": "auto",
-                    }
-                    y = json.dumps(x)
-                    message = SDRConfiguration.SDRConfiguration.from_json(y)
-                    client_sock.sendall(bytes(message, encoding='utf8')) 
+                    self.processComand(json.loads(data.decode('utf8')))
+                    #вернуть картеж (если не верная то пусой коржеж)
                 if not data:
                     break
             client_sock.close()    

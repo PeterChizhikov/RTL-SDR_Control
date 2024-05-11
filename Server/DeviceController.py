@@ -30,19 +30,10 @@ class DeviceController(QThread, QObject):
 
     saveToQueueSignal = pyqtSignal(SDRData.SDRData)
 
-    def startReadDeviceDataSlot(self,json_data):
+    def startReadDeviceDataSlot(self):
         print("startReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = True
-
-        
-        config = SDRConfiguration.SDRConfiguration.load_settings(json_data=json_data)
-        self.sdr.sample_rate = config.sampleRate
-        self.sdr.center_freq = config.centerFreq
-        self.sdr.freq_correction = config.freq_correction 
-        self.sdr.gain = config.gain
-        self.read_samples_num = config.read_samples
-        self.readDeviceData()
 
 
 
