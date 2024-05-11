@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->label_7->setVisible(false);
+    WaterfallInit();
 }
 
 MainWindow::~MainWindow()
@@ -50,4 +51,16 @@ void MainWindow::on_pushButton_2_clicked()
     onExitClick();
 }
 
+void MainWindow::WaterfallInit()
+{
+    fp3 = ui->customPlot_2;
+    fp3->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
+    m_pColorMap = new QCPColorMap(fp3->xAxis,fp3->yAxis);
+    m_pColorMap->data()->setSize(1024,100);
+    m_pColorMap->data()->setRange(QCPRange(0,1000),QCPRange(0,100));
+    m_pColorMap->setGradient(QCPColorGradient::gpJet);
+    m_pColorMap->rescaleDataRange(true);
 
+    fp3->rescaleAxes();
+   // ui->widget->replot();
+}

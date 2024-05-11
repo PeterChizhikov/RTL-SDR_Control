@@ -4,8 +4,11 @@
 #include <future>
 #include <chrono>
 #include <thread>
+#include <mutex>
 
 using json = nlohmann::json;
+
+std::mutex mx;
 
 Worker* worker;
 
@@ -50,19 +53,21 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
            QByteArray temp = socket->readAll();
            response = QString::fromUtf8(temp);
 
-           if(handleResponse(w, ui, response))
-           {
-               std::future<void> handleSuccess = std::async([ui] {
-                   ui->label_7->setStyleSheet("color:green;");
-                   ui->label_7->setText("Success");
-                   std::this_thread::sleep_for(std::chrono::seconds(1));
-                   ui->label_7->setStyleSheet("color:red;");
-                   ui->label_7->setVisible(false);
-               });
-               activityState = !activityState;
-               ui->pushButton_3->setText("Stop");
+            std::lock_guard<std::mutex> lock(mx);
+            if(handleResponse(w, ui, response))
+            {
+                std::thread t([ui]() {
 
-               handleSuccess.get();
+                    ui->label_7->setStyleSheet("color:green;");
+                    ui->label_7->setText("Success");
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    ui->label_7->setStyleSheet("color:red;");
+                    ui->label_7->setVisible(false);
+                });
+                activityState = !activityState;
+                ui->pushButton_3->setText("Stop");
+
+                t.join();
 
            }
 
@@ -104,11 +109,13 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 
             QByteArray temp = socket->readAll();
             response = QString::fromUtf8(temp);
+
+            std::lock_guard<std::mutex> lock(mx);
             if(handleResponse(w, ui, response)) {
 
                 worker->wait();
 
-                std::future<void> handleSuccess = std::async(std::launch::async, [ui]() {
+                std::thread t([ui]() {
                         ui->label_7->setStyleSheet("color:green;");
                         ui->label_7->setText("Success");
                         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -119,7 +126,7 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
                 activityState = !activityState;
                 ui->pushButton_3->setText("Start");
 
-                handleSuccess.get();
+                t.join();
             }
 
 
@@ -134,6 +141,7 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
     }
 
     socket->close();
+    delete socket;
 }
 
 void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
@@ -163,9 +171,11 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
 
             QByteArray temp = socket->readAll();
             response = QString::fromUtf8(temp);
+
+            std::lock_guard<std::mutex> lock(mx);
             if(handleResponse(w, ui, response)) {
 
-                std::future<void> handleSuccess = std::async(std::launch::async, [ui]() {
+                std::thread t([ui]() {
                         ui->label_7->setStyleSheet("color:green;");
                         ui->label_7->setText("Success");
                         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -173,7 +183,7 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
                         ui->label_7->setVisible(false);
                     });
 
-                handleSuccess.get();
+                t.join();
             }
         }
         else {
@@ -186,6 +196,7 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     }
 
     socket->close();
+    delete socket;
 }
 
 void onExitClick(){

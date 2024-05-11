@@ -15,6 +15,12 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Network REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS PrintSupport REQUIRED)
+find_package(Qt5Gui             REQUIRED)
+find_package(Qt5Core            REQUIRED)
+find_package(Qt5SerialPort      REQUIRED)
+
+include_directories(${QT_INCLUDES})
+include_directories(.)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -72,5 +78,10 @@ endif()
 add_subdirectory(lib/json-develop)
 
 target_link_libraries(SDR_Client PRIVATE nlohmann_json)
+
+target_include_directories(SDR_Client PRIVATE
+                          ${CMAKE_CURRENT_BINARY_DIR}
+                          ${CMAKE_CURRENT_SOURCE_DIR}
+                          ${CMAKE_SOURCE_DIR})
 
 
