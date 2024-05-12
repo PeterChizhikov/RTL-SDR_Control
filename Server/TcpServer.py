@@ -2,7 +2,9 @@ import socket
 from threading import Thread
 import json
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
+from PyQt5.QtCore import QObject, pyqtSignal,QThread
 import requests
+from Structures import SDRConfiguration
 
 class TcpServer(QThread, QObject):
     def __init__(self, serverAdress, serverPort):
@@ -25,6 +27,9 @@ class TcpServer(QThread, QObject):
 
     def getParametersFromJson(self, jsonData):
         print('')
+        #кондишн вериэбл
+        message = SDRConfiguration.SDRConfiguration.from_json(jsonData)
+        #обработка json
 
     def run(self):
         self.serverAdressInfo = (self.servAdr, self.port)
@@ -41,12 +46,7 @@ class TcpServer(QThread, QObject):
                 #qt:
                 if len(data) != 0: 
                     self.processComand(json.loads(data.decode('utf8')))
-                    # self.processComand(json.loads(data.decode('utf8').replace("'", '"')))
-                    x = {
-                        "answer": 200,
-                    }
-                    y = json.dumps(x)
-                    client_sock.sendall(bytes(y, encoding='utf8')) 
+                    #вернуть картеж (если не верная то пусой коржеж)
                 if not data:
                     break
             client_sock.close()    
