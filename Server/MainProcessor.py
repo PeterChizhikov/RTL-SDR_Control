@@ -14,7 +14,6 @@ UDP_CLIENT_PORT = 6643
 SERVER_ADRESS = 'localhost'
 
 
-
 class MainProcessor():
     def __init__(self):
         self.deviceControllerThread = QThread()
@@ -30,9 +29,13 @@ class MainProcessor():
         self.deviceController.start()
 
         self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.QueuedConnection)
-        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
+        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.QueuedConnection)
         self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)  
-        
+        self.tcpServer.setNewSettingsSignal.connect(self.deviceController.setNewSettingsSlot, Qt.QueuedConnection)
+        self.deviceController.setSettingsResponseSignal.connect(self.tcpServer.setSettingsResponseSlot,Qt.DirectConnection)
+        self.deviceController.startAndStopReadDataFromDeviceResponseSignal.connect(self.tcpServer.setSettingsResponseSlot, Qt.DirectConnection)
+
+
         loop = QEventLoop()
         sys.exit(loop.exec_())
 

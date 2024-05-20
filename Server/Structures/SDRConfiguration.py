@@ -55,19 +55,19 @@ class SDRConfiguration:
             # message = json.loads(json_message)
             if message['type'] == 'system':
                 if message['action'] == 'start':
-                    if SDRConfiguration.start_receiver(json_message):
+                    if SDRConfiguration.start_receiver(message):
                         return json.dumps({"answer": 200})
                     else:
                         return json.dumps({"answer": 423})
                 elif message['action'] == 'stop':
-                    if SDRConfiguration.stop_receiver(json_message):
+                    if SDRConfiguration.stop_receiver(message):
                         return json.dumps({"answer": 200})
                     else:
                         return json.dumps({"answer": 423})
                 else:
                     return json.dumps({"answer": 400, "error": "Неизвестное действие"})
             elif message['type'] == 'settings':
-                return SDRConfiguration.settings_handler(json_message)
+                return SDRConfiguration.settings_handler(str(message))
             else:
                 return json.dumps({"answer": 400, "error": "Неизвестный тип"})
         except json.JSONDecodeError:

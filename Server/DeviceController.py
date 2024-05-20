@@ -30,6 +30,9 @@ class DeviceController(QThread, QObject):
         self.workerMut = Lock()
 
     saveToQueueSignal = pyqtSignal(SDRData.SDRData)
+    setSettingsResponseSignal = pyqtSignal(int)
+    startAndStopReadDataFromDeviceResponseSignal = pyqtSignal(int)
+    
 
     def startReadDeviceDataSlot(self):
         print("startReadDeviceDataSlot")
@@ -42,7 +45,22 @@ class DeviceController(QThread, QObject):
     def run(self):
         while not self.read_device_data_status:
             time.sleep(0.5)
-            
+
+
+    def setNewSettingsSlot(self, settingsList):
+        try:
+            self.sdr.sample_rate = settingsList[0]
+            self.sdr.center_freq = settingsList[1]
+            self.sdr.freq_correction = settingsList[2]
+            self.sdr.gain = settingsList[3]
+        except Exception as exptText:
+            print(type(exptText))
+            print(exptText.args)
+            self.setSettingsResponseSignal.emit(409)
+        else:
+            self.setSettingsResponseSignal.emit(200)
+
+
 
     def stopReadDeviceDataSlot(self):
         print("stopReadDeviceDataSlot")
@@ -51,8 +69,14 @@ class DeviceController(QThread, QObject):
 
 
     def readDeviceData(self):
-        while self.read_device_data_status:
+        try:
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)
+        except Exception:
+            self.startAndStopReadDataFromDeviceResponseSignal.emit(423)
+        else:
+            self.startAndStopReadDataFromDeviceResponseSignal.emit(200)
+        while self.read_device_data_status:
+            self.samplesArr = self.sdr.read_samples(self.read_samples_num)   
             self.processSamples(self.samplesArr)
         # return self.samplesArr
 

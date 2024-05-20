@@ -1,9 +1,9 @@
 import socket
-from threading import Thread
+from threading import Condition
+from threading import Lock
 import json
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
-import requests
 from Structures import SDRConfiguration
 
 class TcpServer(QThread, QObject):
@@ -12,24 +12,47 @@ class TcpServer(QThread, QObject):
         QObject.__init__(self)
         self.servAdr = serverAdress
         self.port = serverPort
-
+        self.commandAccepted = 409
+        self.mut = Lock()
+        self.cv = Condition()
 
     startReadDataFromDeviceSignal = pyqtSignal()
     stopReadDataFromDeviceSignal = pyqtSignal()
-        
+    setNewSettingsSignal = pyqtSignal(list)
 
     def processComand(self,command):
-        print(command)
         if command["type"] == 'system':
             self.startReadDataFromDeviceSignal.emit() if command["action"] == 'start' else self.stopReadDataFromDeviceSignal.emit()
         if command["type"] == 'settings': 
             self.getParametersFromJson(command)
 
     def getParametersFromJson(self, jsonData):
-        print('')
-        #кондишн вериэбл
-        message = SDRConfiguration.SDRConfiguration.from_json(jsonData)
-        #обработка json
+        self.commandAccepted = 409
+        message = [float(jsonData["sample_rate"]), 
+                   float(jsonData["center_frequency"]),
+                   float(jsonData["frequency_correction"]),
+                   float(jsonData["gain"]),]
+        if len(message) != 0:
+            self.setNewSettingsSignal.emit(message)
+        else:
+            with self.cv:
+                self.commandAccepted = 409
+                self.cv.notify_all()
+            
+    def startAndStopReadDataFromDeviceSlot(self, status):
+        with self.cv:
+            self.commandAccepted = status
+            self.cv.notify_all()
+
+    def setSettingsResponseSlot(self, status):
+        with self.cv:
+            self.commandAccepted = status
+            self.cv.notify_all()
+
+    def formResponseMessage(self, status):
+        x = {
+            "answer": self.commandAccepted,
+        }
 
     def run(self):
         self.serverAdressInfo = (self.servAdr, self.port)
@@ -43,13 +66,13 @@ class TcpServer(QThread, QObject):
             print('Connected by', client_addr)
             while True:
                 data = client_sock.recv(2048)  
-                #qt:
                 if len(data) != 0: 
-                    self.processComand(json.loads(data.decode('utf8')))
-                    #вернуть картеж (если не верная то пусой коржеж)
+                    with self.cv:
+                        self.processComand(json.loads(data.decode('utf8')))
+                        self.cv.wait()
+                        y = json.dumps(self.formResponseMessage())
+                        print(y)
+                        client_sock.sendall(bytes(y, encoding='utf8')) 
                 if not data:
                     break
-            client_sock.close()    
-        
-        
-        
+            client_sock.close()
