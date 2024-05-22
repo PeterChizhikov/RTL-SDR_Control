@@ -35,8 +35,6 @@ class DeviceController(QThread, QObject):
     
 
     def startReadDeviceDataSlot(self):
-        print("2**********************")
-        print("startReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = True
         self.readDeviceData()
@@ -49,8 +47,8 @@ class DeviceController(QThread, QObject):
         try:
             self.sdr.sample_rate = settingsList[0]
             self.sdr.center_freq = settingsList[1]
-            self.sdr.freq_correction = settingsList[2]
-            self.sdr.gain = settingsList[3]
+            # self.sdr.freq_correction = settingsList[2]
+            # self.sdr.gain = settingsList[3]
         except Exception as exptText:
             print(type(exptText))
             print(exptText.args)
@@ -59,28 +57,28 @@ class DeviceController(QThread, QObject):
             self.setSettingsResponseSignal.emit(200)
 
     def stopReadDeviceDataSlot(self):
-        print("2**********************")
-        print("stopReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = False
-            print("3**********************")
         self.startAndStopReadDataFromDeviceResponseSignal.emit(200)    
 
     def readDeviceData(self):
-        print("3**********************")
         try:
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)
         except Exception:
-            print(">>>>>>",423)
             self.startAndStopReadDataFromDeviceResponseSignal.emit(423)
         else:
-            print(">>>>>>",200)
             self.startAndStopReadDataFromDeviceResponseSignal.emit(200)
+
+        threadloop = Thread(target=self.readDataloop)
+        threadloop.start()
+        
+
+    def readDataloop(self):
         while self.read_device_data_status:
-            print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)   
             self.processSamples(self.samplesArr)
-        # return self.samplesArr
+
+
 
     def processSamples(self, IQSamples):
             # cF = 60e6

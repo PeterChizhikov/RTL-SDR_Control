@@ -27,11 +27,14 @@ class TcpServer(QThread, QObject):
             self.getParametersFromJson(command)
 
     def getParametersFromJson(self, jsonData):
-        self.commandAccepted = 409
         message = [float(jsonData["sample_rate"]), 
                    float(jsonData["center_frequency"]),
-                   float(jsonData["frequency_correction"]),
-                   float(jsonData["gain"]),]
+                   float(jsonData["frequency_correction"]),]
+        
+        message.append("auto") if str(jsonData["gain"]) == "auto" else message.append(float(jsonData["gain"]))
+    
+        
+
         if len(message) != 0:
             self.setNewSettingsSignal.emit(message)
         else:
@@ -39,7 +42,7 @@ class TcpServer(QThread, QObject):
                 self.commandAccepted = 409
                 self.cv.notify_all()
             
-    def startAndStopReadDataFromDeviceSlot(self, status):
+    def startAndStopReadDataFromDeviceResponseSlot(self, status):
         with self.cv:
             self.commandAccepted = status
             self.cv.notify_all()
@@ -51,8 +54,9 @@ class TcpServer(QThread, QObject):
 
     def formResponseMessage(self, status):
         x = {
-            "answer": self.commandAccepted,
+            "answer": status,
         }
+        return x
 
     def run(self):
         self.serverAdressInfo = (self.servAdr, self.port)
@@ -70,7 +74,7 @@ class TcpServer(QThread, QObject):
                     with self.cv:
                         self.processComand(json.loads(data.decode('utf8')))
                         self.cv.wait()
-                        y = json.dumps(self.formResponseMessage())
+                        y = json.dumps(self.formResponseMessage(self.commandAccepted))
                         print(y)
                         client_sock.sendall(bytes(y, encoding='utf8')) 
                 if not data:

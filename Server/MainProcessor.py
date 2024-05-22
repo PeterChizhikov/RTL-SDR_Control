@@ -30,12 +30,17 @@ class MainProcessor():
         self.udpServer.start()
         self.deviceController.start()
 
-        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.DirectConnection)
-        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
-        self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)  
-        self.tcpServer.setNewSettingsSignal.connect(self.deviceController.setNewSettingsSlot, Qt.DirectConnection)
-        self.deviceController.setSettingsResponseSignal.connect(self.tcpServer.setSettingsResponseSlot,Qt.DirectConnection)
+        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.QueuedConnection)
+        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.QueuedConnection)
         self.deviceController.startAndStopReadDataFromDeviceResponseSignal.connect(self.tcpServer.startAndStopReadDataFromDeviceResponseSlot, Qt.DirectConnection)
+
+
+        self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)  
+
+
+        self.tcpServer.setNewSettingsSignal.connect(self.deviceController.setNewSettingsSlot, Qt.QueuedConnection)
+        self.deviceController.setSettingsResponseSignal.connect(self.tcpServer.setSettingsResponseSlot,Qt.DirectConnection)
+        
 
 
         loop = QEventLoop()
