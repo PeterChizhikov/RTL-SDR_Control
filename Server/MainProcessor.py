@@ -1,6 +1,7 @@
 from TcpServer import TcpServer 
 from UdpServer import UdpServer
 from DeviceController import DeviceController 
+from AsyncTcpServer import AsyncTcpServer
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, Qt,QEventLoop,QThread
 from PyQt5.QtWidgets import QApplication
@@ -24,16 +25,17 @@ class MainProcessor():
         self.tcpServer = TcpServer(SERVER_ADRESS,TCP_PORT)
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
         
+
         self.tcpServer.start()
         self.udpServer.start()
         self.deviceController.start()
 
-        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.QueuedConnection)
-        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.QueuedConnection)
+        self.tcpServer.startReadDataFromDeviceSignal.connect(self.deviceController.startReadDeviceDataSlot, Qt.DirectConnection)
+        self.tcpServer.stopReadDataFromDeviceSignal.connect(self.deviceController.stopReadDeviceDataSlot,Qt.DirectConnection)
         self.deviceController.saveToQueueSignal.connect(self.udpServer.saveToQueueSlot,Qt.DirectConnection)  
-        self.tcpServer.setNewSettingsSignal.connect(self.deviceController.setNewSettingsSlot, Qt.QueuedConnection)
+        self.tcpServer.setNewSettingsSignal.connect(self.deviceController.setNewSettingsSlot, Qt.DirectConnection)
         self.deviceController.setSettingsResponseSignal.connect(self.tcpServer.setSettingsResponseSlot,Qt.DirectConnection)
-        self.deviceController.startAndStopReadDataFromDeviceResponseSignal.connect(self.tcpServer.setSettingsResponseSlot, Qt.DirectConnection)
+        self.deviceController.startAndStopReadDataFromDeviceResponseSignal.connect(self.tcpServer.startAndStopReadDataFromDeviceResponseSlot, Qt.DirectConnection)
 
 
         loop = QEventLoop()

@@ -35,17 +35,15 @@ class DeviceController(QThread, QObject):
     
 
     def startReadDeviceDataSlot(self):
+        print("2**********************")
         print("startReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = True
         self.readDeviceData()
 
-
-
     def run(self):
         while not self.read_device_data_status:
             time.sleep(0.5)
-
 
     def setNewSettingsSlot(self, settingsList):
         try:
@@ -60,22 +58,26 @@ class DeviceController(QThread, QObject):
         else:
             self.setSettingsResponseSignal.emit(200)
 
-
-
     def stopReadDeviceDataSlot(self):
+        print("2**********************")
         print("stopReadDeviceDataSlot")
         with self.mutex:
             self.read_device_data_status = False
-
+            print("3**********************")
+        self.startAndStopReadDataFromDeviceResponseSignal.emit(200)    
 
     def readDeviceData(self):
+        print("3**********************")
         try:
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)
         except Exception:
+            print(">>>>>>",423)
             self.startAndStopReadDataFromDeviceResponseSignal.emit(423)
         else:
+            print(">>>>>>",200)
             self.startAndStopReadDataFromDeviceResponseSignal.emit(200)
         while self.read_device_data_status:
+            print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
             self.samplesArr = self.sdr.read_samples(self.read_samples_num)   
             self.processSamples(self.samplesArr)
         # return self.samplesArr
