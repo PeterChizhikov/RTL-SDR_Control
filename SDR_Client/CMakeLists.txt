@@ -84,4 +84,10 @@ target_include_directories(SDR_Client PRIVATE
                           ${CMAKE_CURRENT_SOURCE_DIR}
                           ${CMAKE_SOURCE_DIR})
 
+set(IMAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(IMAGE_DEST_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY ${IMAGE_SOURCE_DIR}/spectre.jpeg DESTINATION ${IMAGE_DEST_DIR})
+
 

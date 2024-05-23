@@ -103,6 +103,12 @@ void MainWindow::onDataRecieved(double _minF, double _maxF, double _minM, double
         }
     }
 
+    ui->size_label_0->setText(QString::number(_minM));
+    ui->size_label_100->setText(QString::number(_maxM));
+    ui->size_label_50->setText(QString::number(_maxM-(_maxM-_minM)/2));
+    ui->size_label_20->setText(QString::number((_maxM-(_maxM-_minM)/2)/2));
+    ui->size_label_80->setText(QString::number((_maxM-(_maxM-_minM)/2)*1.5));
+
     m_pColorMap->rescaleDataRange(true);
     m_pColorMap->data()->setSize(_xValues.size()+1,100);
     fp3->rescaleAxes();
