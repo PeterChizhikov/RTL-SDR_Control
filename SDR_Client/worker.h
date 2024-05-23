@@ -2,6 +2,8 @@
 #define WORKER_H
 
 #include <QThread>
+#include <mutex>
+#include <thread>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
@@ -11,6 +13,8 @@ class Worker : public QThread
     MainWindow* w;
     Ui::MainWindow *ui;
     QList<QVector<double> > value_lofar;
+
+    Q_OBJECT
 
 public:
     void run() override;

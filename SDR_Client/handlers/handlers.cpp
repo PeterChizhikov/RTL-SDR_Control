@@ -1,14 +1,9 @@
 #include "handlers.h"
 #include "../dto/DTO.h"
 #include <QTcpSocket>
-#include <future>
 #include <chrono>
-#include <thread>
-#include <mutex>
 
 using json = nlohmann::json;
-
-std::mutex mx;
 
 Worker* worker;
 
@@ -53,7 +48,6 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
            QByteArray temp = socket->readAll();
            response = QString::fromUtf8(temp);
 
-            std::lock_guard<std::mutex> lock(mx);
             if(handleResponse(w, ui, response))
             {
                 std::thread t([ui]() {
@@ -110,7 +104,6 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
             QByteArray temp = socket->readAll();
             response = QString::fromUtf8(temp);
 
-            std::lock_guard<std::mutex> lock(mx);
             if(handleResponse(w, ui, response)) {
 
                 worker->wait();
@@ -172,7 +165,6 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
             QByteArray temp = socket->readAll();
             response = QString::fromUtf8(temp);
 
-            std::lock_guard<std::mutex> lock(mx);
             if(handleResponse(w, ui, response)) {
 
                 std::thread t([ui]() {

@@ -42,6 +42,8 @@ void MainWindow::on_pushButton_clicked()
     autoState = !autoState;
 
     autoState ? ui->pushButton->setStyleSheet("background-color:green; border-radius: 5px; color: white; border: 1px solid white;") : ui->pushButton->setStyleSheet("background-color:blue; border-radius: 5px; color: white; border: 1px solid white;");
+
+    ui->spinBox_4->setEnabled(!autoState);
 }
 
 
@@ -57,9 +59,9 @@ void MainWindow::WaterfallInit()
     fp3->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
     m_pColorMap = new QCPColorMap(fp3->xAxis,fp3->yAxis);
     m_pColorMap->data()->setSize(1024,100);
-    m_pColorMap->data()->setRange(QCPRange(0,1000),QCPRange(0,100));
+    m_pColorMap->data()->setRange(QCPRange(0,100),QCPRange(0,100));
     m_pColorMap->setGradient(QCPColorGradient::gpJet);
-    m_pColorMap->rescaleDataRange(true);
+//    m_pColorMap->rescaleDataRange(true);
 
     fp3->rescaleAxes();
    // ui->widget->replot();
