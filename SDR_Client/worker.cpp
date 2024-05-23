@@ -4,6 +4,8 @@
 
 using json = nlohmann::json;
 
+std::mutex mtx;
+
 struct GraphData{
     double minFrequencyX;
     double maxFrequencyX;
@@ -33,13 +35,15 @@ GraphData unmarshallGraphData(json& response){
 }
 
 void Worker::updatePlot(double minF, double maxF, double minM, double maxM, const QVector<double>& xValues, const QVector<double>& yValues ) {
+
+    std::lock_guard<std::mutex> lock(mtx);
+
     ui->customPlot->yAxis->blockSignals(true);
     ui->customPlot->xAxis->blockSignals(true);
 
     ui->customPlot->yAxis->setRange(minM, maxM);
     ui->customPlot->xAxis->setRange(minF, maxF);
-    ui->customPlot_2->xAxis->setRange(minF, maxF);
-    w->m_pColorMap->data()->setRange(QCPRange(minM,maxM),QCPRange(0,100));
+    w->m_pColorMap->data()->setRange(QCPRange(minF,maxF),QCPRange(0,100));
     ui->customPlot->graph(0)->setData(xValues, yValues);
     ui->customPlot->replot();
 
@@ -74,7 +78,7 @@ QVector<QVector<double>> generateMock(){
     srand(time(0));
     QVector<QVector<double>> values;
 
-    for(double i = 0.0; i < 5.0 ; i+=0.01){
+    for(double i = 0.0; i < 5.0; i+=0.01){
         QVector<double> tmp;
         tmp.append(i);
         if(i>2.0&&i<3.0)
@@ -114,7 +118,9 @@ void Worker::run() {
 
             GraphData gData = unmarshallGraphData(response);
 
-            updatePlot(gData.minFrequencyX, gData.maxFrequencyX, gData.minValueY, gData.maxValueY, gData.xValues, gData.yValues);
+            std::thread th(&Worker::updatePlot, this, gData.minFrequencyX, gData.maxFrequencyX, gData.minValueY, gData.maxValueY, gData.xValues, gData.yValues);
+
+            th.join();
         }
 
 
@@ -126,9 +132,11 @@ void Worker::run() {
 //            yValues.push_back(row[1]);
 //        }
 
-//        updatePlot(0, 5, 0, 100, xValues, yValues);
-        QThread::msleep(100);
+//        std::thread th(&Worker::updatePlot, this, 0, 5, 0, 100, xValues, yValues);
 
+//        th.join();
+
+        QThread::msleep(500);
     }
 
     udpSocket->close();
