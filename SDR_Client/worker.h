@@ -2,35 +2,25 @@
 #define WORKER_H
 
 #include <QThread>
-#include <mutex>
-#include <thread>
-#include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <nlohmann/json.hpp>
 
 class Worker : public QThread
 {
-
-    MainWindow* w;
-    Ui::MainWindow *ui;
-    QList<QVector<double> > value_lofar;
 
     Q_OBJECT
 
 public:
     void run() override;
-    Worker(MainWindow* _w, Ui::MainWindow* _ui) : w(_w), ui(_ui){}
-    Worker(const Worker& other) : w(other.w), ui(other.ui) {}
-    Worker(Worker&& other) : w(other.w), ui(other.ui) {
-        other.w = nullptr;
-        other.ui = nullptr;
-    }
     void stop(){
         this->requestInterruption();
     }
 
-public slots:
+signals:
 
-    void updatePlot(double minF, double maxF, double minM, double maxM, const QVector<double>& xValues, const QVector<double>& yValues );
+    void DataRecieved(double _minF, double _maxF, double _minM, double _maxM, const QVector<double>& _xValues, const QVector<double>& _yValues);
+
+
 };
 
 #endif // WORKER_H

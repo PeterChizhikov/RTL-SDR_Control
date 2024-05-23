@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <nlohmann/json.hpp>
 #include <./lib/qcustomplot/qcustomplot.h>
+#include "worker.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +21,8 @@ public:
     ~MainWindow();
     void WaterfallInit();
 
+    Worker worker;
+
     QCustomPlot * fp3;
     QCPColorMap * m_pColorMap;
 
@@ -31,8 +35,11 @@ private slots:
 
     void on_pushButton_2_clicked();
 
-private:
+    void onDataRecieved(double _minF, double _maxF, double _minM, double _maxM, const QVector<double>& _xValues, const QVector<double>& _yValues);
 
+
+private:
+    QList<QVector<double> > value_lofar;
     Ui::MainWindow *ui;
     bool activityState = false;
     bool autoState = false;
