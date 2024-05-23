@@ -1,7 +1,6 @@
 from TcpServer import TcpServer 
 from UdpServer import UdpServer
 from DeviceController import DeviceController 
-from AsyncTcpServer import AsyncTcpServer
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, Qt,QEventLoop,QThread
 from PyQt5.QtWidgets import QApplication

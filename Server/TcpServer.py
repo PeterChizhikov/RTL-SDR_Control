@@ -28,8 +28,8 @@ class TcpServer(QThread, QObject):
 
     def getParametersFromJson(self, jsonData):
         message = [float(jsonData["sample_rate"]), 
-                   float(jsonData["center_frequency"]),
-                   float(jsonData["frequency_correction"]),]
+                   int(jsonData["center_frequency"]),
+                   int(jsonData["frequency_correction"]),]
         
         message.append("auto") if str(jsonData["gain"]) == "auto" else message.append(float(jsonData["gain"]))
     

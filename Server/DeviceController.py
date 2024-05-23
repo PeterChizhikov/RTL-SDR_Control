@@ -83,7 +83,7 @@ class DeviceController(QThread, QObject):
     def processSamples(self, IQSamples):
             # cF = 60e6
             # N = 256*1024
-        Fs = self.sdr.sample_rate / 1e6
+        Fs = self.sdr.sample_rate
         PSD = np.abs(np.fft.fft(IQSamples))**2/(self.read_samples_num*Fs)
         PSD_log = 10.0*np.log10(PSD)
             #y:
