@@ -26,7 +26,6 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
     json requestJSON;
     requestJSON["type"]="system";
     requestJSON["action"]="start";
-    w->worker.start();
     QTcpSocket* socket = new QTcpSocket(w);
 
     socket->connectToHost("127.0.0.1", 5577);
@@ -56,7 +55,7 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
                 });
                 activityState = !activityState;
                 ui->pushButton_3->setText("Stop");
-
+                w->worker.start();
                 t.join();
             }
 
