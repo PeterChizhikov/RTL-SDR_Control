@@ -2,10 +2,9 @@
 #include "../dto/DTO.h"
 #include <QTcpSocket>
 #include <chrono>
+#include <thread>
 
 using json = nlohmann::json;
-
-Worker* worker;
 
 bool handleResponse(MainWindow* w, Ui::MainWindow *ui, QString& response) {
 
@@ -27,10 +26,7 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
     json requestJSON;
     requestJSON["type"]="system";
     requestJSON["action"]="start";
-
-    worker = new Worker(w, ui);
-    worker->start();
-
+    w->worker.start();
     QTcpSocket* socket = new QTcpSocket(w);
 
     socket->connectToHost("127.0.0.1", 5577);
@@ -62,7 +58,6 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
                 ui->pushButton_3->setText("Stop");
 
                 t.join();
-
             }
 
         }
@@ -80,7 +75,6 @@ void onStartClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState) {
 }
 
 void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
-    worker->stop();
     QString response;
 
     json requestJSON;
@@ -106,8 +100,6 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 
             if(handleResponse(w, ui, response)) {
 
-                worker->wait();
-
                 std::thread t([ui]() {
                         ui->label_7->setStyleSheet("color:green;");
                         ui->label_7->setText("Success");
@@ -118,6 +110,9 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 
                 activityState = !activityState;
                 ui->pushButton_3->setText("Start");
+
+                w->worker.stop();
+                w->worker.wait();
 
                 t.join();
             }
@@ -140,6 +135,16 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     const int sample_rate = ui->spinBox->value();
     const std::string center_frequency = std::to_string(ui->spinBox_2->value());
+
+    if(sample_rate<2*ui->spinBox_2->value()){
+        std::thread t([ui]() {
+                ui->label_7->setStyleSheet("color:red;");
+                ui->label_7->setText("Sample Rate must be at least 2 times more than Center Frequency");
+            });
+        t.detach();
+        return;
+    }
+
     const std::string frequency_correction = std::to_string(ui->spinBox_3->value());
     const std::string gain =  autoState ? "auto" : std::to_string(ui->spinBox_4->value());
     const Options opts = {sample_rate, center_frequency, frequency_correction, gain};
@@ -191,9 +196,10 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     delete socket;
 }
 
-void onExitClick(){
+void onExitClick(MainWindow* w){
 
-    worker->stop();
-    worker->wait();
+    w->worker.stop();
+    w->worker.wait();
     QApplication::exit();
+
 }
