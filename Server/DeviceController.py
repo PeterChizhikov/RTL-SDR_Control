@@ -47,8 +47,8 @@ class DeviceController(QThread, QObject):
         try:
             self.sdr.sample_rate = settingsList[0]
             self.sdr.center_freq = settingsList[1]
-            # self.sdr.freq_correction = settingsList[2]
-            # self.sdr.gain = settingsList[3]
+            self.sdr.freq_correction = settingsList[2]
+            self.sdr.gain = settingsList[3]
         except Exception as exptText:
             print(type(exptText))
             print(exptText.args)
