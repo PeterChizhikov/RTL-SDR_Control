@@ -318,7 +318,7 @@ border: 1px solid white;</string>
            <widget class="QLabel" name="size_label_100">
             <property name="maximumSize">
              <size>
-              <width>28</width>
+              <width>60</width>
               <height>16777215</height>
              </size>
             </property>
@@ -337,7 +337,7 @@ border: 1px solid white;</string>
            <widget class="QLabel" name="size_label_80">
             <property name="maximumSize">
              <size>
-              <width>28</width>
+              <width>60</width>
               <height>16777215</height>
              </size>
             </property>
@@ -356,7 +356,7 @@ border: 1px solid white;</string>
            <widget class="QLabel" name="size_label_50">
             <property name="maximumSize">
              <size>
-              <width>28</width>
+              <width>60</width>
               <height>16777215</height>
              </size>
             </property>
@@ -375,7 +375,7 @@ border: 1px solid white;</string>
            <widget class="QLabel" name="size_label_20">
             <property name="maximumSize">
              <size>
-              <width>28</width>
+              <width>60</width>
               <height>16777215</height>
              </size>
             </property>
@@ -394,7 +394,7 @@ border: 1px solid white;</string>
            <widget class="QLabel" name="size_label_0">
             <property name="maximumSize">
              <size>
-              <width>28</width>
+              <width>60</width>
               <height>16777215</height>
              </size>
             </property>
