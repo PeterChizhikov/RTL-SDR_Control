@@ -1,6 +1,7 @@
 #include "worker.h"
 #include <QUdpSocket>
 #include <ctime>
+#include <float.h>
 
 using json = nlohmann::json;
 
@@ -34,45 +35,6 @@ GraphData unmarshallGraphData(json& response){
     return {minFrequencyX, maxFrequencyX, maxValueY, minValueY, xValues, yValues};
 }
 
-void Worker::updatePlot(double minF, double maxF, double minM, double maxM, const QVector<double>& xValues, const QVector<double>& yValues ) {
-
-    std::lock_guard<std::mutex> lock(mtx);
-
-    ui->customPlot->yAxis->blockSignals(true);
-    ui->customPlot->xAxis->blockSignals(true);
-
-    ui->customPlot->yAxis->setRange(minM, maxM);
-    ui->customPlot->xAxis->setRange(minF, maxF);
-    w->m_pColorMap->data()->setRange(QCPRange(minF,maxF),QCPRange(0,100));
-    ui->customPlot->graph(0)->setData(xValues, yValues);
-    ui->customPlot->replot();
-
-    ui->customPlot->blockSignals(false);
-    ui->customPlot->yAxis->blockSignals(false);
-    ui->customPlot->xAxis->blockSignals(false);
-
-    if(value_lofar.size()>99)
-    {
-        value_lofar.removeLast();
-    }
-
-    value_lofar.prepend(yValues);
-
-    for (int i=0;i<value_lofar.size();i++)
-    {
-        for(int j=0;j<xValues.size();j++)
-        {
-            w->m_pColorMap->data()->setCell(j,i,value_lofar[i][j]);
-        }
-    }
-
-    w->m_pColorMap->rescaleDataRange(true);
-    w->m_pColorMap->data()->setSize(xValues.size()+1,100);
-    w->fp3->rescaleAxes();
-    ui->customPlot_2->replot();
-
-}
-
 QVector<QVector<double>> generateMock(){
 
     srand(time(0));
@@ -93,12 +55,11 @@ QVector<QVector<double>> generateMock(){
 
 void Worker::run() {
 
-    QUdpSocket* udpSocket = new QUdpSocket(w);
+    QUdpSocket* udpSocket = new QUdpSocket();
     udpSocket->bind(QHostAddress::Any, 6643);
 
-    ui->customPlot->addGraph();
-    ui->customPlot->xAxis->setLabel("frequency");
-    ui->customPlot->yAxis->setLabel("magnitude");
+    double yTop = DBL_MIN;
+    double yBot = DBL_MAX;
 
     while(!isInterruptionRequested()){
 
@@ -118,9 +79,16 @@ void Worker::run() {
 
             GraphData gData = unmarshallGraphData(response);
 
-            std::thread th(&Worker::updatePlot, this, gData.minFrequencyX, gData.maxFrequencyX, gData.minValueY, gData.maxValueY, gData.xValues, gData.yValues);
+            if (gData.minValueY < yBot){
+                yBot = gData.minValueY;
+            }
 
-            th.join();
+            if(gData.maxValueY > yTop) {
+                yTop = gData.maxValueY;
+            }
+
+            emit DataRecieved(gData.minFrequencyX, gData.maxFrequencyX, yBot, yTop, gData.xValues, gData.yValues);
+
         }
 
 
@@ -132,15 +100,10 @@ void Worker::run() {
 //            yValues.push_back(row[1]);
 //        }
 
-//        std::thread th(&Worker::updatePlot, this, 0, 5, 0, 100, xValues, yValues);
-
-//        th.join();
-
-        QThread::msleep(500);
+//        emit DataRecieved( 0, 5, 0, 100, xValues, yValues);
     }
 
     udpSocket->close();
     delete udpSocket;
 
 }
-
