@@ -164,7 +164,7 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
         QString message = QString::fromStdString(request.dump());
         socket->write(message.toUtf8());
         socket->waitForBytesWritten();
-
+        w->worker.stop();
         if(socket->waitForReadyRead()){
 
             QByteArray temp = socket->readAll();
@@ -181,6 +181,8 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
                     });
 
                 t.join();
+
+                w->worker.start();
             }
         }
         else {
