@@ -45,13 +45,15 @@ class DeviceController(QThread, QObject):
 
     def setNewSettingsSlot(self, settingsList):
         try:
-            self.sdr.sample_rate = settingsList[0]
-            self.sdr.center_freq = settingsList[1]
-            self.sdr.freq_correction = settingsList[2]
-            self.sdr.gain = settingsList[3]
+            self.sdr.set_sample_rate(settingsList[0])
+            self.sdr.set_center_freq(settingsList[1])
+            self.sdr.set_freq_correction(settingsList[2])
+            self.sdr.set_gain(settingsList[3])
+            
         except Exception as exptText:
             print(type(exptText))
-            print(exptText.args)
+            print(exptText)
+            
             self.setSettingsResponseSignal.emit(409)
         else:
             self.setSettingsResponseSignal.emit(200)
