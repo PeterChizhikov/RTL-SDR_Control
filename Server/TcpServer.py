@@ -31,9 +31,7 @@ class TcpServer(QThread, QObject):
                    int(jsonData["center_frequency"]),
                    int(jsonData["frequency_correction"]),]
         
-        message.append("auto") if str(jsonData["gain"]) == "auto" else message.append(float(jsonData["gain"]))
-    
-        
+        message.append("auto") if str(jsonData["gain"]) == "auto" else message.append(float(jsonData["gain"])) 
 
         if len(message) != 0:
             self.setNewSettingsSignal.emit(message)

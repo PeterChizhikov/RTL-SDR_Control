@@ -87,7 +87,7 @@ class DeviceController(QThread, QObject):
             # N = 256*1024
         Fs = self.sdr.sample_rate
         PSD = np.abs(np.fft.fft(IQSamples))**2/(self.read_samples_num*Fs)
-        PSD_log = 10.0*np.log10(PSD)
+        PSD_log = 10.0*np.log10(PSD, where=PSD>0)
             #y:
         PSD_shifted = np.fft.fftshift(PSD_log)
             #x:
@@ -100,6 +100,14 @@ class DeviceController(QThread, QObject):
 
         minY = min(PSD_shifted)
         maxY = max(PSD_shifted)
+
+
+        # i = 0
+        # while i < len(PSD_shifted):
+        #     if PSD_shifted[i] < -110 or PSD_shifted[i] > 110:
+        #         np.delete(PSD_shifted, i)
+        #         np.delete(f, i)
+        #         i = i +1
 
         data = SDRData.SDRData(f,PSD_shifted,minF,maxF, minY, maxY)
 

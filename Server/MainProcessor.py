@@ -20,7 +20,7 @@ class MainProcessor():
         self.udpThread = QThread()
         self.tcpThread = QThread()
 
-        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 1024)
+        self.deviceController = DeviceController(2.048e6, 60e6, 60, 'auto', 512)
         self.tcpServer = TcpServer(SERVER_ADRESS,TCP_PORT)
         self.udpServer = UdpServer(SERVER_ADRESS,UDP_SERVER_PORT, UDP_CLIENT_PORT)
         
