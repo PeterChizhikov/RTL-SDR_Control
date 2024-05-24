@@ -87,7 +87,7 @@ class DeviceController(QThread, QObject):
             # N = 256*1024
         Fs = self.sdr.sample_rate
         PSD = np.abs(np.fft.fft(IQSamples))**2/(self.read_samples_num*Fs)
-        print(PSD)
+        # print(PSD)
         PSD_log = 10.0*np.log10(PSD, where=PSD>1e-15)
             #y:
         PSD_shifted = np.fft.fftshift(PSD_log)
