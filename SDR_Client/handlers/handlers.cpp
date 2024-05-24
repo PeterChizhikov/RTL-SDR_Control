@@ -137,6 +137,7 @@ void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
 
     if(sample_rate<2*ui->spinBox_2->value()){
         std::thread t([ui]() {
+                ui->label_7->setVisible(true);
                 ui->label_7->setStyleSheet("color:red;");
                 ui->label_7->setText("Sample Rate must be at least 2 times more than Center Frequency");
             });
