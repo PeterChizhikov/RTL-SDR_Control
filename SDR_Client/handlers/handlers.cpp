@@ -134,17 +134,6 @@ void onStopClick(MainWindow* w, Ui::MainWindow *ui, bool& activityState){
 void onSetClick(MainWindow* w, Ui::MainWindow *ui, const bool& autoState) {
     const int sample_rate = ui->spinBox->value();
     const std::string center_frequency = std::to_string(ui->spinBox_2->value());
-
-    if(sample_rate<2*ui->spinBox_2->value()){
-        std::thread t([ui]() {
-                ui->label_7->setVisible(true);
-                ui->label_7->setStyleSheet("color:red;");
-                ui->label_7->setText("Sample Rate must be at least 2 times more than Center Frequency");
-            });
-        t.detach();
-        return;
-    }
-
     const std::string frequency_correction = std::to_string(ui->spinBox_3->value());
     const std::string gain =  autoState ? "auto" : std::to_string(ui->spinBox_4->value());
     const Options opts = {sample_rate, center_frequency, frequency_correction, gain};
